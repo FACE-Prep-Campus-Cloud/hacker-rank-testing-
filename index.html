@@ -247,15 +247,9 @@ tbody tr{transition:background 0.12s;}
 .delta-pill.up{background:#d1fae5;color:#065f46;}
 .delta-pill.down{background:#fee2e2;color:#7f1d1d;}
 .delta-pill.flat{background:var(--bg2);color:var(--ink3);}
-.trend-movers-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.trend-mover-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);}
-.trend-mover-title{font-family:var(--font-display);font-size:14px;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
-.trend-mover-item{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);}
-.trend-mover-item:last-child{border-bottom:none;}
-.trend-mover-rank{font-size:11px;font-weight:700;color:var(--ink3);width:18px;text-align:center;}
-.trend-mover-name{font-size:13px;font-weight:500;color:var(--ink);flex:1;}
-.trend-mover-vals{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
-.trend-mover-current{font-family:var(--font-display);font-size:16px;color:var(--gold-dark);}
+
+/* Hit Ratio Card Special Style */
+.hit-ratio-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);color:#065f46;border:1px solid #6ee7b7;}
 
 /* MENTOR MODAL */
 .mentor-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;display:none;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px);}
@@ -275,7 +269,7 @@ tbody tr{transition:background 0.12s;}
   .shell{grid-template-columns:1fr;}
   .main{padding:20px;}
   .metrics-row,.trend-kpi-row{grid-template-columns:1fr 1fr;}
-  .charts-grid,.nps-charts-row,.trend-charts-grid,.trend-movers-grid{grid-template-columns:1fr;}
+  .charts-grid,.nps-charts-row,.trend-charts-grid{grid-template-columns:1fr;}
   .nps-hero-row{grid-template-columns:1fr;}
   .logo-name{font-size:18px;}
   .topbar{padding:0 16px;}
@@ -570,28 +564,42 @@ tbody tr{transition:background 0.12s;}
       <div>
         <div class="trend-eyebrow">Historical Analytics · Sep 2025 – Apr 2026</div>
         <div class="trend-hero-title" id="trendHeroTitle">Trend Over Time</div>
-        <div class="trend-hero-sub" id="trendHeroSub">Track how ratings, NPS, and response volume change across months</div>
+        <div class="trend-hero-sub" id="trendHeroSub">Track how ratings, NPS, Hit Ratio, and response volume change across months</div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;" id="trendCycleBtns"></div>
     </div>
 
-    <div class="trend-setup-notice" id="trendSetupNotice">
-      <div style="font-size:24px;flex-shrink:0;">ℹ️</div>
-      <div>
-        <div class="trend-setup-title">How to enable real Trend data</div>
-        <div class="trend-setup-text">
-          Add a column named <code>cycle</code> to your Google Sheet and fill it with values like
-          <code>Sep 2025</code>, <code>Oct 2025</code>, … <code>Apr 2026</code>.
-          Until then, the dashboard shows a preview built from your current data.
-        </div>
-      </div>
+    <!-- Trend data loading indicator -->
+    <div id="trendLoadingNotice" style="display:none;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:16px 24px;display:flex;gap:12px;align-items:center;">
+      <div class="spinner" style="width:24px;height:24px;border-width:2px;"></div>
+      <span style="font-size:13px;color:var(--ink3);">Loading trend data from Rathinam College sheet…</span>
     </div>
 
     <div class="trend-kpi-row">
-      <div class="trend-kpi-card"><div class="trend-kpi-label">Avg Rating</div><div class="trend-kpi-value" id="tkpiRating">—</div><div class="trend-kpi-delta flat" id="tkpiRatingDelta">—</div><div class="trend-kpi-cycle" id="tkpiRatingCycle">—</div></div>
-      <div class="trend-kpi-card"><div class="trend-kpi-label">NPS Index</div><div class="trend-kpi-value" id="tkpiNps">—</div><div class="trend-kpi-delta flat" id="tkpiNpsDelta">—</div><div class="trend-kpi-cycle" id="tkpiNpsCycle">—</div></div>
-      <div class="trend-kpi-card"><div class="trend-kpi-label">Total Responses</div><div class="trend-kpi-value" id="tkpiResponses">—</div><div class="trend-kpi-delta flat" id="tkpiResponsesDelta">—</div><div class="trend-kpi-cycle" id="tkpiResponsesCycle">—</div></div>
-      <div class="trend-kpi-card"><div class="trend-kpi-label">Promoter %</div><div class="trend-kpi-value" id="tkpiPromo">—</div><div class="trend-kpi-delta flat" id="tkpiPromoDelta">—</div><div class="trend-kpi-cycle" id="tkpiPromoCycle">—</div></div>
+      <div class="trend-kpi-card">
+        <div class="trend-kpi-label">Avg Rating</div>
+        <div class="trend-kpi-value" id="tkpiRating">—</div>
+        <div class="trend-kpi-delta flat" id="tkpiRatingDelta">—</div>
+        <div class="trend-kpi-cycle" id="tkpiRatingCycle">—</div>
+      </div>
+      <div class="trend-kpi-card">
+        <div class="trend-kpi-label">NPS Index</div>
+        <div class="trend-kpi-value" id="tkpiNps">—</div>
+        <div class="trend-kpi-delta flat" id="tkpiNpsDelta">—</div>
+        <div class="trend-kpi-cycle" id="tkpiNpsCycle">—</div>
+      </div>
+      <div class="trend-kpi-card" style="border-top:3px solid #10b981;">
+        <div class="trend-kpi-label" style="color:#065f46;">Hit Ratio</div>
+        <div class="trend-kpi-value" id="tkpiHitRatio" style="color:#065f46;">—</div>
+        <div class="trend-kpi-delta flat" id="tkpiHitRatioDelta">—</div>
+        <div class="trend-kpi-cycle" id="tkpiHitRatioCycle">—</div>
+      </div>
+      <div class="trend-kpi-card">
+        <div class="trend-kpi-label">Promoter %</div>
+        <div class="trend-kpi-value" id="tkpiPromo">—</div>
+        <div class="trend-kpi-delta flat" id="tkpiPromoDelta">—</div>
+        <div class="trend-kpi-cycle" id="tkpiPromoCycle">—</div>
+      </div>
     </div>
 
     <div class="trend-charts-grid">
@@ -604,8 +612,11 @@ tbody tr{transition:background 0.12s;}
         <div style="position:relative;width:100%;height:240px;"><canvas id="trendNpsChart"></canvas></div>
       </div>
       <div class="trend-chart-card">
-        <div class="card-header"><div class="card-title">Response Volume</div><span class="badge badge-primary" id="trendVolBadge">—</span></div>
-        <div style="position:relative;width:100%;height:240px;"><canvas id="trendVolChart"></canvas></div>
+        <div class="card-header">
+          <div class="card-title">Hit Ratio Trend</div>
+          <span class="badge badge-green" id="trendHitRatioBadge">—</span>
+        </div>
+        <div style="position:relative;width:100%;height:240px;"><canvas id="trendHitRatioChart"></canvas></div>
       </div>
     </div>
 
@@ -619,19 +630,15 @@ tbody tr{transition:background 0.12s;}
       </div>
     </div>
 
-    <div class="trend-movers-grid">
-      <div class="trend-mover-card"><div class="trend-mover-title">📈 Most Improved Mentors</div><div id="trendMoversUp"></div></div>
-      <div class="trend-mover-card"><div class="trend-mover-title">📉 Most Declined Mentors</div><div id="trendMoversDown"></div></div>
-    </div>
-
     <div class="card">
       <div class="card-header"><div class="card-title">Month-by-Month Summary Table · Sep 2025 – Apr 2026</div><span class="badge badge-gold" id="trendTableBadge">—</span></div>
       <div class="trend-cycle-table-wrap">
         <table class="trend-cycle-table">
-          <thead><tr><th>Month</th><th>Responses</th><th>Avg Rating</th><th>Δ Rating</th><th>NPS Index</th><th>Δ NPS</th><th>Promoters %</th><th>Detractors %</th><th>Mentors</th></tr></thead>
+          <thead><tr><th>Month</th><th>Responses</th><th>Avg Rating</th><th>Δ Rating</th><th>NPS Index</th><th>Δ NPS</th><th>Hit Ratio</th><th>Δ Hit Ratio</th><th>Promoters %</th><th>Detractors %</th><th>Mentors</th></tr></thead>
           <tbody id="trendCycleTableBody"></tbody>
         </table>
       </div>
+      <div style="font-size:11px;color:var(--ink4);margin-top:10px;">* Hit Ratio = (Actual Responses ÷ Expected Responses) × 100%</div>
     </div>
   </div>
 
@@ -654,7 +661,13 @@ const COLLEGES=[
   {name:"Alliance University",gid:"361218329"},{name:"Kristu Jayanti University",gid:"2101380937"},
   {name:"S-VYASA University",gid:"29895230"},{name:"Asian School of Business",gid:"1108050649"}
 ];
+
+/* Main performance sheet */
 const SHEET_ID='19HsWARl8RFNZ6nc-bUCBKKEN39JkQVxCBfbNCUSe2_4';
+
+/* ─── DEDICATED TREND SHEET for Rathinam College ─── */
+const TREND_SHEET_ID='1nDMDazG090HPikkrSohUYXmYfZiO-MaREitGlJHwoKc';
+const RATHINAM_COLLEGE_NAME='Rathinam College of Arts & Science';
 
 /* Fixed 8-month window Sep 2025 – Apr 2026 */
 const FIXED_CYCLES=['Sep 2025','Oct 2025','Nov 2025','Dec 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026'];
@@ -662,11 +675,11 @@ const FIXED_CYCLES=['Sep 2025','Oct 2025','Nov 2025','Dec 2025','Jan 2026','Feb 
 /* ─── STATE ─── */
 let currentCollege=null,MENTORS=[],TABLE_DATA=[],DEPT_LIST=[];
 let NPS_DATA={scores:[],promoters:0,passives:0,detractors:0,npsIndex:null,avg:0,total:0,scoreFreq:{}};
-let TREND_DATA={cycles:[],hasCycleCol:false,cycleStats:{},mentorCycleStats:{}};
+let TREND_DATA={cycles:[],hasCycleCol:false,hasDedicatedSheet:false,cycleStats:{},mentorCycleStats:{}};
 let currentPanel='summary',currentDeptFilter='all',currentInsightChart='scatter';
 let chartInstances={},npsDonutInst=null,npsBarChartInst=null;
 let insightScatterInst=null,insightHorizInst=null,insightResponseInst=null;
-let trendRatingInst=null,trendNpsInst=null,trendVolInst=null,trendSegInst=null;
+let trendRatingInst=null,trendNpsInst=null,trendHitRatioInst=null,trendSegInst=null;
 let needleAnimRAF=null;
 
 /* ─── MOBILE SIDEBAR ─── */
@@ -720,6 +733,10 @@ async function loadSheetData(){
   const overlay=document.getElementById('loadingOverlay'),errEl=document.getElementById('errorMessage');
   document.getElementById('loadingText').textContent=`Loading data for ${currentCollege.name}...`;
   overlay.classList.remove('hidden');errEl.classList.remove('show');
+
+  /* Check if this is Rathinam – if so, also load dedicated trend sheet */
+  const isRathinam=currentCollege.name===RATHINAM_COLLEGE_NAME;
+
   return new Promise((resolve,reject)=>{
     fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${currentCollege.gid}`)
       .then(r=>{if(!r.ok)throw new Error('Fetch failed');return r.text();})
@@ -727,10 +744,27 @@ async function loadSheetData(){
         Papa.parse(text,{header:true,skipEmptyLines:true,
           complete(res){
             processSheetData(res.data);
-            renderAllData();
-            document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString();
-            setTimeout(()=>overlay.classList.add('hidden'),500);
-            resolve();
+            if(isRathinam){
+              /* Load dedicated trend sheet for Rathinam */
+              document.getElementById('loadingText').textContent='Loading Rathinam trend data...';
+              loadRathinamTrendSheet().then(()=>{
+                renderAllData();
+                document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString();
+                setTimeout(()=>overlay.classList.add('hidden'),500);
+                resolve();
+              }).catch(()=>{
+                /* Fall back gracefully if trend sheet fails */
+                renderAllData();
+                document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString();
+                setTimeout(()=>overlay.classList.add('hidden'),500);
+                resolve();
+              });
+            }else{
+              renderAllData();
+              document.getElementById('lastUpdated').textContent=new Date().toLocaleTimeString();
+              setTimeout(()=>overlay.classList.add('hidden'),500);
+              resolve();
+            }
           },
           error(){throw new Error('Parse failed');}
         });
@@ -739,12 +773,139 @@ async function loadSheetData(){
   });
 }
 
-/* ─── PROCESS DATA ─── */
+/* ─── LOAD RATHINAM DEDICATED TREND SHEET ─── */
+async function loadRathinamTrendSheet(){
+  /* Try GID 0 first (first sheet), then other GIDs */
+  const gidsToTry=['0','1707229573'];
+  for(const gid of gidsToTry){
+    try{
+      const resp=await fetch(`https://docs.google.com/spreadsheets/d/${TREND_SHEET_ID}/export?format=csv&gid=${gid}`);
+      if(!resp.ok)continue;
+      const text=await resp.text();
+      const parsed=await new Promise((res,rej)=>{
+        Papa.parse(text,{header:true,skipEmptyLines:true,
+          complete(r){res(r.data);},error(e){rej(e);}
+        });
+      });
+      if(parsed&&parsed.length>0){
+        processDedicatedTrendData(parsed);
+        return;
+      }
+    }catch(e){console.warn('Trend sheet GID',gid,'failed:',e);}
+  }
+  console.warn('Could not load dedicated trend sheet – using simulated data');
+}
+
+/* ─── PROCESS DEDICATED TREND SHEET DATA ─── */
+/* Expected columns (case-insensitive, flexible matching):
+   month/cycle/period, responses/total_responses, avg_rating/average_rating/rating,
+   nps/nps_index/nps_score, hit_ratio/hitratio/hit ratio,
+   promoters/promoter_pct, passives/passive_pct, detractors/detractor_pct,
+   mentors/mentor_count, expected_responses/expected
+*/
+function processDedicatedTrendData(rows){
+  if(!rows||!rows.length)return;
+
+  const keys=Object.keys(rows[0]).map(k=>k.trim().toLowerCase());
+  const rawKeys=Object.keys(rows[0]);
+
+  function findCol(...candidates){
+    for(const c of candidates){
+      const idx=keys.findIndex(k=>k===c||k.replace(/[\s_-]/g,'')===c.replace(/[\s_-]/g,''));
+      if(idx>=0)return rawKeys[idx];
+    }
+    return null;
+  }
+
+  const colMonth=findCol('month','cycle','period','term','batch');
+  const colResponses=findCol('responses','total_responses','totalresponses','count');
+  const colRating=findCol('avg_rating','average_rating','avgrating','rating','avg rating');
+  const colNps=findCol('nps_index','nps','npsindex','nps index','nps score');
+  const colHitRatio=findCol('hit_ratio','hitratio','hit ratio','hitrate','hit_rate','hit rate');
+  const colPromoters=findCol('promoters','promoter_pct','promoters%','promoter%','promoter pct');
+  const colPassives=findCol('passives','passive_pct','passives%','passive%','passive pct');
+  const colDetractors=findCol('detractors','detractor_pct','detractors%','detractor%','detractor pct');
+  const colMentors=findCol('mentors','mentor_count','mentorcount','mentor count');
+  const colExpected=findCol('expected_responses','expectedresponses','expected','target');
+
+  console.log('Trend sheet columns detected:',{colMonth,colResponses,colRating,colNps,colHitRatio,colPromoters,colPassives,colDetractors,colMentors,colExpected});
+
+  const cycleStats={};
+  const cycles=[];
+
+  rows.forEach(row=>{
+    if(!colMonth)return;
+    const rawMonth=(row[colMonth]||'').trim();
+    if(!rawMonth)return;
+
+    /* Normalise month name */
+    const aliasMap={
+      'sep 2025':'Sep 2025','september 2025':'Sep 2025','sep-2025':'Sep 2025',
+      'oct 2025':'Oct 2025','october 2025':'Oct 2025','oct-2025':'Oct 2025',
+      'nov 2025':'Nov 2025','november 2025':'Nov 2025','nov-2025':'Nov 2025',
+      'dec 2025':'Dec 2025','december 2025':'Dec 2025','dec-2025':'Dec 2025',
+      'jan 2026':'Jan 2026','january 2026':'Jan 2026','jan-2026':'Jan 2026',
+      'feb 2026':'Feb 2026','february 2026':'Feb 2026','feb-2026':'Feb 2026',
+      'mar 2026':'Mar 2026','march 2026':'Mar 2026','mar-2026':'Mar 2026',
+      'apr 2026':'Apr 2026','april 2026':'Apr 2026','apr-2026':'Apr 2026'
+    };
+    const cycleName=aliasMap[rawMonth.toLowerCase()]||rawMonth;
+    if(cycles.indexOf(cycleName)===-1)cycles.push(cycleName);
+
+    const pv=s=>{const v=parseFloat((row[s]||'').toString().replace('%','').trim());return isNaN(v)?null:v;};
+    const iv=s=>{const v=parseInt((row[s]||'').toString().replace('%','').trim(),10);return isNaN(v)?null:v;};
+
+    const responses=colResponses?iv(colResponses):null;
+    const ratingAvg=colRating?pv(colRating):null;
+    const npsIndex=colNps?iv(colNps):null;
+    const expected=colExpected?iv(colExpected):null;
+
+    /* Hit ratio: use direct column, or compute from responses/expected */
+    let hitRatio=colHitRatio?pv(colHitRatio):null;
+    if(hitRatio===null&&responses!==null&&expected!==null&&expected>0){
+      hitRatio=parseFloat(((responses/expected)*100).toFixed(1));
+    }
+
+    let promoterPct=colPromoters?pv(colPromoters):null;
+    let passivePct=colPassives?pv(colPassives):null;
+    let detractorPct=colDetractors?pv(colDetractors):null;
+    const mentorCount=colMentors?iv(colMentors):null;
+
+    /* Normalise percentages (if stored as decimals like 0.45 → 45) */
+    if(promoterPct!==null&&promoterPct<=1)promoterPct=parseFloat((promoterPct*100).toFixed(1));
+    if(passivePct!==null&&passivePct<=1)passivePct=parseFloat((passivePct*100).toFixed(1));
+    if(detractorPct!==null&&detractorPct<=1)detractorPct=parseFloat((detractorPct*100).toFixed(1));
+    if(hitRatio!==null&&hitRatio<=1)hitRatio=parseFloat((hitRatio*100).toFixed(1));
+
+    cycleStats[cycleName]={
+      cycle:cycleName,
+      responses:responses||0,
+      ratingAvg,
+      npsIndex,
+      hitRatio,
+      promoterPct,
+      passivePct,
+      detractorPct,
+      mentorCount:mentorCount||MENTORS.length,
+      mentorRatings:{}
+    };
+  });
+
+  /* Sort cycles by fixed window order */
+  const fixedPresent=FIXED_CYCLES.filter(c=>cycles.includes(c));
+  const extra=cycles.filter(c=>!FIXED_CYCLES.includes(c));
+  const sortedCycles=[...fixedPresent,...extra];
+
+  TREND_DATA={cycles:sortedCycles,hasCycleCol:true,hasDedicatedSheet:true,cycleStats,mentorCycleStats:{}};
+  buildTrendCycleButtons();
+  console.log('Dedicated trend sheet loaded:',sortedCycles.length,'months',cycleStats);
+}
+
+/* ─── PROCESS MAIN SHEET DATA ─── */
 function processSheetData(rows){
   TABLE_DATA=[];
   const mentorStats={},deptSet=new Set(),subjectSet=new Set(),npsScores=[];
 
-  /* Detect cycle column – accepts "cycle", "batch", "term", "semester", "month" */
   const cycleColNames=['cycle','batch','term','semester','month','period'];
   let cycleCol=null;
   if(rows.length>0){
@@ -752,18 +913,16 @@ function processSheetData(rows){
     cycleCol=keys.find(k=>cycleColNames.includes(k.toLowerCase().trim()))||null;
   }
   const hasCycle=!!cycleCol;
-  const cycleMap={};   /* key: cycle label → {ratings[], npsScores[], mentors:{}} */
+  const cycleMap={};
 
   rows.forEach(row=>{
     const dept=row.department||'Unknown';
     if(dept!=='Unknown')deptSet.add(dept);
 
-    /* Normalise cycle name to the fixed window labels when possible */
     let cycleName='—';
     if(hasCycle){
       const raw=(row[cycleCol]||'').trim();
       cycleName=raw||'Unknown';
-      /* Map common aliases to our fixed labels */
       const aliasMap={
         'sep 2025':'Sep 2025','september 2025':'Sep 2025',
         'oct 2025':'Oct 2025','october 2025':'Oct 2025',
@@ -803,7 +962,6 @@ function processSheetData(rows){
     }
   });
 
-  /* NPS global */
   const total=npsScores.length;
   const promoters=npsScores.filter(s=>s>=9).length;
   const passives=npsScores.filter(s=>s>=7&&s<=8).length;
@@ -816,7 +974,6 @@ function processSheetData(rows){
   npsScores.forEach(s=>{if(scoreFreq[s]!==undefined)scoreFreq[s]++;});
   NPS_DATA={scores:npsScores,promoters,passives,detractors,npsIndex,avg,median,total,scoreFreq};
 
-  /* Mentor stats */
   const allRatings=TABLE_DATA.map(r=>r.rating);
   const globalMean=allRatings.length>0?allRatings.reduce((a,b)=>a+b,0)/allRatings.length:0;
   const totalAllResponses=allRatings.length;
@@ -846,16 +1003,18 @@ function processSheetData(rows){
   else{document.getElementById('subjectCount').textContent='—';document.getElementById('subjectSub').textContent='No data';}
   document.getElementById('pageSub').textContent=`${DEPT_LIST.length} departments · ${MENTORS.length} mentors · ${subjectSet.size} subjects`;
 
-  processTrendData(cycleMap,hasCycle,rows.length);
+  /* Only build simulated trend if not Rathinam (Rathinam gets dedicated sheet) */
+  if(currentCollege&&currentCollege.name!==RATHINAM_COLLEGE_NAME){
+    processTrendData(cycleMap,hasCycle,rows.length);
+  }
 }
 
-/* ─── TREND DATA PROCESSING ─── */
+/* ─── TREND DATA PROCESSING (non-Rathinam / fallback) ─── */
 function processTrendData(cycleMap,hasCycle,totalRows){
   let cycleStats={};
   let cycles=[];
 
   if(hasCycle){
-    /* Use only our fixed 8 months; any extra cycles fall to the end */
     const rawCycles=Object.keys(cycleMap).filter(c=>c!=='Unknown'&&c!=='—');
     const fixedPresent=FIXED_CYCLES.filter(c=>rawCycles.includes(c));
     const extra=rawCycles.filter(c=>!FIXED_CYCLES.includes(c)).sort();
@@ -874,13 +1033,13 @@ function processTrendData(cycleMap,hasCycle,totalRows){
       const mentorRatings={};
       Object.entries(d.mentors).forEach(([mn,rs])=>{mentorRatings[mn]=rs.reduce((s,v)=>s+v,0)/rs.length;});
       cycleStats[c]={cycle:c,responses:d.ratings.length,ratingAvg:ratingAvg?parseFloat(ratingAvg.toFixed(2)):null,
-        npsIndex:npsIdx,promoterPct:nTotal>0?Math.round(nProm/nTotal*100):null,
+        npsIndex:npsIdx,hitRatio:null,
+        promoterPct:nTotal>0?Math.round(nProm/nTotal*100):null,
         passivePct:nTotal>0?Math.round(nPass/nTotal*100):null,
         detractorPct:nTotal>0?Math.round(nDetr/nTotal*100):null,mentorCount:mCount,mentorRatings};
     });
-    TREND_DATA={cycles,hasCycleCol:true,cycleStats};
+    TREND_DATA={cycles,hasCycleCol:true,hasDedicatedSheet:false,cycleStats};
   } else {
-    /* ── PREVIEW MODE: generate simulated data for the fixed 8-month window ── */
     cycles=[...FIXED_CYCLES];
     const globalAvg=TABLE_DATA.length>0?TABLE_DATA.reduce((s,r)=>s+r.rating,0)/TABLE_DATA.length:4.0;
     const globalNps=NPS_DATA.npsIndex!==null?NPS_DATA.npsIndex:30;
@@ -890,9 +1049,8 @@ function processTrendData(cycleMap,hasCycle,totalRows){
 
     cycles.forEach((c,idx)=>{
       const isLast=idx===cycles.length-1;
-      /* Slight upward trend over the 8 months, +variance */
-      const progress=idx/(cycles.length-1);          // 0→1
-      const trend=progress*0.15;                     // drift up +0.15 over the year
+      const progress=idx/(cycles.length-1);
+      const trend=progress*0.15;
       function jitter(base,amp){return parseFloat((base+trend+Math.sin(idx*1.37)*amp+(Math.random()-0.5)*amp*0.25).toFixed(2));}
       const rA=isLast?parseFloat(globalAvg.toFixed(2)):Math.min(5,Math.max(1,jitter(globalAvg,0.18)));
       const nI=isLast?globalNps:Math.min(100,Math.max(-100,Math.round(jitter(globalNps,7))));
@@ -905,10 +1063,10 @@ function processTrendData(cycleMap,hasCycle,totalRows){
       MENTORS.forEach(m=>{
         mentorRatings[m.name]=isLast?m.rating:Math.min(5,Math.max(1,parseFloat((m.rating+jitter(0,0.25)).toFixed(2))));
       });
-      cycleStats[c]={cycle:c,responses:resp,ratingAvg:rA,npsIndex:nI,
+      cycleStats[c]={cycle:c,responses:resp,ratingAvg:rA,npsIndex:nI,hitRatio:null,
         promoterPct:prom,passivePct:pass,detractorPct:detr,mentorCount:mCount,mentorRatings};
     });
-    TREND_DATA={cycles,hasCycleCol:false,cycleStats};
+    TREND_DATA={cycles,hasCycleCol:false,hasDedicatedSheet:false,cycleStats};
   }
 
   buildTrendCycleButtons();
@@ -1128,20 +1286,28 @@ function selectTrendCycle(cycle,btn){
 }
 
 function renderTrendPanel(){
-  const{cycles,hasCycleCol,cycleStats}=TREND_DATA;
-  document.getElementById('trendSetupNotice').style.display=hasCycleCol?'none':'flex';
-  document.getElementById('trendHeroSub').textContent=hasCycleCol
-    ?`Tracking ${cycles.length} months with real data from your sheet`
-    :`Preview mode — simulated trend for Sep 2025–Apr 2026. Add a "cycle" column to your sheet for real data.`;
+  const{cycles,hasCycleCol,hasDedicatedSheet,cycleStats}=TREND_DATA;
+
+  /* Update hero subtitle based on data source */
+  const isRathinam=currentCollege&&currentCollege.name===RATHINAM_COLLEGE_NAME;
+  if(hasDedicatedSheet){
+    document.getElementById('trendHeroSub').textContent=`Live trend data from Rathinam College dedicated sheet · ${cycles.length} months tracked`;
+  }else if(hasCycleCol){
+    document.getElementById('trendHeroSub').textContent=`Tracking ${cycles.length} months with real data from your sheet`;
+  }else{
+    document.getElementById('trendHeroSub').textContent=isRathinam
+      ?`Loading trend data from Rathinam dedicated sheet…`
+      :`Preview mode — simulated trend for Sep 2025–Apr 2026. Add a "cycle" column to your sheet for real data.`;
+  }
+
   document.getElementById('trendRatingBadge').textContent=`${cycles.length} months`;
   document.getElementById('trendNpsBadge').textContent=`${cycles.length} months`;
-  document.getElementById('trendVolBadge').textContent=`${cycles.length} months`;
+  document.getElementById('trendHitRatioBadge').textContent=`${cycles.length} months`;
   document.getElementById('trendSegBadge').textContent=`${cycles.length} months`;
   document.getElementById('trendTableBadge').textContent=`${cycles.length} months`;
   if(!cycles.length)return;
   renderTrendKpis(cycles[cycles.length-1]);
   renderTrendCharts();
-  renderTrendMovers();
   renderTrendCycleTable();
 }
 
@@ -1151,17 +1317,17 @@ function renderTrendKpis(cycle){
   const idx=cycles.indexOf(cycle);
   const prev=idx>0?cycleStats[cycles[idx-1]]:null;
   function setKpi(valId,deltaId,cycleId,val,prevVal,fmt){
-    document.getElementById(valId).textContent=val!==null?fmt(val):'—';
+    document.getElementById(valId).textContent=val!==null&&val!==undefined?fmt(val):'—';
     const d=document.getElementById(deltaId),cy=document.getElementById(cycleId);
     cy.textContent=`Latest: ${cycle}`;
-    if(prev&&val!==null&&prevVal!==null){
+    if(prev&&val!==null&&val!==undefined&&prevVal!==null&&prevVal!==undefined){
       const diff=val-prevVal;const sign=diff>=0?'+':'';const cls=diff>0.005?'up':diff<-0.005?'down':'flat';
       d.className=`trend-kpi-delta ${cls}`;d.textContent=`${sign}${fmt(diff)} vs ${cycles[idx-1]}`;
     }else{d.className='trend-kpi-delta flat';d.textContent='First month';}
   }
   setKpi('tkpiRating','tkpiRatingDelta','tkpiRatingCycle',curr.ratingAvg,prev?.ratingAvg,v=>v.toFixed(2));
   setKpi('tkpiNps','tkpiNpsDelta','tkpiNpsCycle',curr.npsIndex,prev?.npsIndex,v=>(v>0?'+':'')+v);
-  setKpi('tkpiResponses','tkpiResponsesDelta','tkpiResponsesCycle',curr.responses,prev?.responses,v=>v);
+  setKpi('tkpiHitRatio','tkpiHitRatioDelta','tkpiHitRatioCycle',curr.hitRatio,prev?.hitRatio,v=>v!==null?v.toFixed(1)+'%':'—');
   setKpi('tkpiPromo','tkpiPromoDelta','tkpiPromoCycle',curr.promoterPct,prev?.promoterPct,v=>v+'%');
 }
 
@@ -1170,7 +1336,7 @@ function renderTrendCharts(){
   const labels=cycles;
   const ratings=cycles.map(c=>cycleStats[c].ratingAvg);
   const npss=cycles.map(c=>cycleStats[c].npsIndex);
-  const vols=cycles.map(c=>cycleStats[c].responses);
+  const hitRatios=cycles.map(c=>cycleStats[c].hitRatio);
   const proms=cycles.map(c=>cycleStats[c].promoterPct);
   const passes=cycles.map(c=>cycleStats[c].passivePct);
   const detrs=cycles.map(c=>cycleStats[c].detractorPct);
@@ -1196,11 +1362,36 @@ function renderTrendCharts(){
     options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:ctx=>{const v=ctx.parsed.y;return`NPS: ${v>0?'+':''}${v??'—'}`;}}}}},
     plugins:[ChartDataLabels]});
 
-  if(trendVolInst){trendVolInst.destroy();}
-  trendVolInst=new Chart(document.getElementById('trendVolChart'),{type:'bar',
-    data:{labels,datasets:[{label:'Responses',data:vols,backgroundColor:vols.map((_,i)=>i===vols.length-1?'rgba(92,54,0,0.85)':'rgba(196,138,0,0.65)'),borderColor:'#c48a00',borderWidth:1.5,borderRadius:5,borderSkipped:false}]},
-    options:{...baseOpts,plugins:{...baseOpts.plugins,datalabels:{anchor:'end',align:'end',color:'#5c3600',font:{weight:'bold',size:10},formatter:v=>v}}},
-    plugins:[ChartDataLabels]});
+  /* ── HIT RATIO CHART (replaces Response Volume) ── */
+  if(trendHitRatioInst){trendHitRatioInst.destroy();}
+  const hasHitRatioData=hitRatios.some(v=>v!==null&&v!==undefined);
+  if(hasHitRatioData){
+    trendHitRatioInst=new Chart(document.getElementById('trendHitRatioChart'),{type:'line',
+      data:{labels,datasets:[{label:'Hit Ratio %',data:hitRatios,
+        borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.10)',
+        borderWidth:2.5,fill:true,tension:0.4,
+        pointBackgroundColor:'#fff',pointBorderColor:'#10b981',
+        pointRadius:5,pointHoverRadius:7}]},
+      options:{...baseOpts,
+        scales:{...baseOpts.scales,
+          y:{...baseOpts.scales.y,min:0,max:100,
+            ticks:{...baseOpts.scales.y.ticks,stepSize:20,callback:v=>v+'%'}}},
+        plugins:{...baseOpts.plugins,
+          datalabels:{display:true,anchor:'end',align:'top',
+            color:'#065f46',font:{weight:'bold',size:10},
+            formatter:v=>v!==null?v.toFixed(1)+'%':''},
+          tooltip:{...baseOpts.plugins.tooltip,
+            callbacks:{label:ctx=>`Hit Ratio: ${ctx.parsed.y!==null?ctx.parsed.y.toFixed(1)+'%':'—'}`}}}},
+      plugins:[ChartDataLabels]});
+  }else{
+    /* Show a placeholder message in canvas area */
+    const canvas=document.getElementById('trendHitRatioChart');
+    const ctx2d=canvas.getContext('2d');
+    canvas.width=canvas.offsetWidth||400;canvas.height=240;
+    ctx2d.clearRect(0,0,canvas.width,canvas.height);
+    ctx2d.fillStyle='#c09840';ctx2d.font='13px Inter,sans-serif';ctx2d.textAlign='center';
+    ctx2d.fillText('Add hit_ratio column to trend sheet for real data',canvas.width/2,120);
+  }
 
   if(trendSegInst){trendSegInst.destroy();}
   trendSegInst=new Chart(document.getElementById('trendSegChart'),{type:'line',
@@ -1213,47 +1404,33 @@ function renderTrendCharts(){
     plugins:[ChartDataLabels]});
 }
 
-function renderTrendMovers(){
-  const{cycles,cycleStats}=TREND_DATA;
-  if(cycles.length<2){
-    const msg='<div style="padding:16px;color:var(--ink3);font-size:13px;">Need at least 2 months of data to compare</div>';
-    document.getElementById('trendMoversUp').innerHTML=msg;
-    document.getElementById('trendMoversDown').innerHTML=msg;return;
-  }
-  const lastStats=cycleStats[cycles[cycles.length-1]]?.mentorRatings||{};
-  const prevStats=cycleStats[cycles[cycles.length-2]]?.mentorRatings||{};
-  const common=Object.keys(lastStats).filter(m=>prevStats[m]!==undefined);
-  const changes=common.map(m=>({name:m,current:lastStats[m],prev:prevStats[m],delta:lastStats[m]-prevStats[m]})).sort((a,b)=>b.delta-a.delta);
-  function moverItem(m,i){
-    const sign=m.delta>=0?'+':'';const cls=m.delta>0?'up':m.delta<0?'down':'flat';
-    return`<div class="trend-mover-item"><div class="trend-mover-rank">${i+1}</div><div class="trend-mover-name">${m.name}</div><div class="trend-mover-vals"><div class="trend-mover-current">${m.current.toFixed(2)}</div><div><span class="delta-pill ${cls}">${sign}${m.delta.toFixed(2)}</span></div></div></div>`;
-  }
-  document.getElementById('trendMoversUp').innerHTML=changes.slice(0,5).map(moverItem).join('')||'<div style="padding:16px;color:var(--ink3);font-size:13px;">No movers</div>';
-  document.getElementById('trendMoversDown').innerHTML=changes.slice(-5).reverse().map(moverItem).join('')||'<div style="padding:16px;color:var(--ink3);font-size:13px;">No movers</div>';
-}
-
 function renderTrendCycleTable(){
   const{cycles,cycleStats}=TREND_DATA;
-  if(!cycles.length){document.getElementById('trendCycleTableBody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--ink3);">No data</td></tr>';return;}
+  if(!cycles.length){document.getElementById('trendCycleTableBody').innerHTML='<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--ink3);">No data</td></tr>';return;}
   document.getElementById('trendCycleTableBody').innerHTML=cycles.slice().reverse().map((c,idx)=>{
     const s=cycleStats[c];
     const prevKey=cycles[cycles.length-2-idx];
     const prev=prevKey?cycleStats[prevKey]:null;
     function deltaPill(curr,prevVal,fmt){
-      if(!prev||curr===null||prevVal===null)return'<span class="delta-pill flat">—</span>';
+      if(!prev||curr===null||curr===undefined||prevVal===null||prevVal===undefined)return'<span class="delta-pill flat">—</span>';
       const d=curr-prevVal;const sign=d>=0?'+':'';const cls=d>0.01?'up':d<-0.01?'down':'flat';
       return`<span class="delta-pill ${cls}">${sign}${fmt(d)}</span>`;
     }
+    const hitRatioDisplay=s.hitRatio!==null&&s.hitRatio!==undefined
+      ?`<span style="color:#065f46;font-weight:600;">${s.hitRatio.toFixed(1)}%</span>`
+      :'<span style="color:var(--ink4);">—</span>';
     return`<tr>
       <td style="font-weight:600;color:var(--gold-dark);">${c}</td>
-      <td style="font-family:var(--font-display);font-size:15px;">${s.responses}</td>
-      <td style="font-family:var(--font-display);font-size:15px;color:var(--gold-dark);">${s.ratingAvg!==null?s.ratingAvg.toFixed(2):'—'}</td>
+      <td style="font-family:var(--font-display);font-size:15px;">${s.responses||'—'}</td>
+      <td style="font-family:var(--font-display);font-size:15px;color:var(--gold-dark);">${s.ratingAvg!==null&&s.ratingAvg!==undefined?s.ratingAvg.toFixed(2):'—'}</td>
       <td>${deltaPill(s.ratingAvg,prev?.ratingAvg,v=>v.toFixed(2))}</td>
-      <td style="font-family:var(--font-display);font-size:15px;color:${getNpsColor(s.npsIndex)};">${s.npsIndex!==null?(s.npsIndex>0?'+':'')+s.npsIndex:'—'}</td>
+      <td style="font-family:var(--font-display);font-size:15px;color:${getNpsColor(s.npsIndex)};">${s.npsIndex!==null&&s.npsIndex!==undefined?(s.npsIndex>0?'+':'')+s.npsIndex:'—'}</td>
       <td>${deltaPill(s.npsIndex,prev?.npsIndex,v=>(v>0?'+':'')+Math.round(v))}</td>
-      <td>${s.promoterPct!==null?s.promoterPct+'%':'—'}</td>
-      <td>${s.detractorPct!==null?s.detractorPct+'%':'—'}</td>
-      <td>${s.mentorCount}</td>
+      <td>${hitRatioDisplay}</td>
+      <td>${deltaPill(s.hitRatio,prev?.hitRatio,v=>v.toFixed(1)+'%')}</td>
+      <td>${s.promoterPct!==null&&s.promoterPct!==undefined?s.promoterPct+'%':'—'}</td>
+      <td>${s.detractorPct!==null&&s.detractorPct!==undefined?s.detractorPct+'%':'—'}</td>
+      <td>${s.mentorCount||'—'}</td>
     </tr>`;
   }).join('');
 }
@@ -1407,10 +1584,9 @@ function downloadReport(){
   const promoPct=npsTotal>0?Math.round(promoters/npsTotal*100):0;const passPct=npsTotal>0?Math.round(passives/npsTotal*100):0;const detrPct=npsTotal>0?Math.round(detractors/npsTotal*100):0;
   const tableHead=cols=>`<thead><tr>${cols.map(c=>`<th style="text-align:left;padding:11px 14px;font-size:10px;font-weight:600;color:#fde9a0;text-transform:uppercase;letter-spacing:0.09em;background:linear-gradient(135deg,#4a2800,#7a4f00)">${c}</th>`).join('')}</tr></thead>`;
   const mentorRows=MENTORS.map((m,idx)=>`<tr style="background:${idx%2===0?'#fff':'#fdf8ed'}"><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);font-weight:600">${m.rank}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);font-weight:600;color:#2a1800">${m.name}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);color:#4a2e00">${m.depts.join(', ')}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);font-family:Georgia,serif;font-size:16px;color:#5c3600">${m.bayesianRating.toFixed(2)}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);font-family:Georgia,serif;font-size:16px;color:#5c3600">${m.rating.toFixed(1)}/5</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${m.responses}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${statusBadgeInline(m.rating)}</td></tr>`).join('');
-  const npsRows=npsTotal>0?Object.entries(scoreFreq).map(([score,count])=>{const pct=Math.round(count/npsTotal*100);const seg=parseInt(score)>=9?'Promoter':parseInt(score)>=7?'Passive':'Detractor';return`<tr><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);font-weight:700;font-size:16px;color:#5c3600">${score}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${seg}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${count}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${pct}%</td></tr>`;}).join(''):'<tr><td colspan="4" style="text-align:center;padding:20px;color:#8a6020">No NPS data available</td></tr>';
   const{cycles,cycleStats}=TREND_DATA;
-  const trendRows=cycles.slice().reverse().map((c,i)=>{const s=cycleStats[c];return`<tr style="background:${i%2===0?'#fff':'#fdf8ed'}"><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);font-weight:600;color:#5c3600">${c}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${s.responses}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);font-family:Georgia,serif;font-size:15px;color:#5c3600">${s.ratingAvg!==null?s.ratingAvg.toFixed(2):'—'}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);color:${getNpsColor(s.npsIndex)};font-family:Georgia,serif;font-size:15px">${s.npsIndex!==null?(s.npsIndex>0?'+':'')+s.npsIndex:'—'}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${s.promoterPct!==null?s.promoterPct+'%':'—'}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${s.detractorPct!==null?s.detractorPct+'%':'—'}</td></tr>`;}).join('');
-  const html=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Performance Report — ${collegeName}</title><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;background:#fdf8ed;color:#2a1800;font-size:13px;line-height:1.6;}.rh{background:linear-gradient(135deg,#4a2800,#7a4f00,#a06e00);color:#fde9a0;padding:28px 40px;display:flex;align-items:center;justify-content:space-between;}.rh h1{font-family:Georgia,serif;font-size:26px;font-weight:400;}.rb{padding:36px 40px;max-width:1100px;margin:0 auto;}.sec{margin-bottom:40px;}.st{font-family:Georgia,serif;font-size:20px;color:#5c3600;border-bottom:2px solid #e6b84a;padding-bottom:10px;margin-bottom:18px;}table{width:100%;border-collapse:collapse;font-size:13px;}.ncard{display:inline-flex;flex-direction:column;align-items:center;padding:16px 24px;border-radius:12px;margin:4px;}@media print{.rh{-webkit-print-color-adjust:exact;print-color-adjust:exact;}thead tr{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.pb{page-break-before:always;}}</style></head><body><div class="rh"><div><h1>Performance Report</h1><p>${collegeName}</p></div><div style="text-align:right;font-size:11px;opacity:0.75"><div>Generated: ${now}</div><div>${MENTORS.length} mentors · ${DEPT_LIST.length} depts</div></div></div><div class="rb"><div class="sec"><div class="st">NPS Overview</div><div style="background:linear-gradient(135deg,#4a2800,#7a4f00);border-radius:14px;padding:24px;margin-bottom:20px;display:flex;gap:32px;align-items:center;flex-wrap:wrap;"><div><div style="font-size:10px;color:rgba(253,233,160,0.6);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">NPS Index</div><div style="font-family:Georgia,serif;font-size:56px;color:#f5c842;line-height:1">${npsDisplay}</div><div style="font-size:12px;color:rgba(253,233,160,0.7);margin-top:6px">${getNpsLabel(npsIndex)}</div></div><div style="display:flex;gap:24px;flex-wrap:wrap;"><div class="ncard" style="background:#d1fae5;"><div style="font-family:Georgia,serif;font-size:36px;color:#065f46">${npsTotal>0?promoters:'—'}</div><div style="font-size:10px;font-weight:600;color:#065f46;text-transform:uppercase;letter-spacing:0.09em;margin-top:4px">Promoters</div><div style="font-size:11px;color:#065f46">${promoPct}% · Score 9–10</div></div><div class="ncard" style="background:#fef3c7;"><div style="font-family:Georgia,serif;font-size:36px;color:#78350f">${npsTotal>0?passives:'—'}</div><div style="font-size:10px;font-weight:600;color:#78350f;text-transform:uppercase;letter-spacing:0.09em;margin-top:4px">Passives</div><div style="font-size:11px;color:#78350f">${passPct}% · Score 7–8</div></div><div class="ncard" style="background:#fee2e2;"><div style="font-family:Georgia,serif;font-size:36px;color:#7f1d1d">${npsTotal>0?detractors:'—'}</div><div style="font-size:10px;font-weight:600;color:#7f1d1d;text-transform:uppercase;letter-spacing:0.09em;margin-top:4px">Detractors</div><div style="font-size:11px;color:#7f1d1d">${detrPct}% · Score 1–6</div></div></div></div></div><div class="sec pb"><div class="st">Trend Over Time · Sep 2025–Apr 2026</div><table>${tableHead(['Month','Responses','Avg Rating','NPS Index','Promoters %','Detractors %'])}<tbody>${trendRows}</tbody></table></div><div class="sec pb"><div class="st">Mentor Rankings (Bayesian)</div><table>${tableHead(['Rank','Mentor','Department(s)','Bayesian Score','Avg Rating','Responses','Status'])}<tbody>${mentorRows}</tbody></table><div style="font-size:11px;color:#c09840;margin-top:10px">* NPS = %Promoters − %Detractors · Bayesian = (GlobalMean × ΣResponses + AvgRating × MentorResponses) / (ΣResponses + MentorResponses)</div></div></div></body></html>`;
+  const trendRows=cycles.slice().reverse().map((c,i)=>{const s=cycleStats[c];return`<tr style="background:${i%2===0?'#fff':'#fdf8ed'}"><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);font-weight:600;color:#5c3600">${c}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${s.responses||'—'}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);font-family:Georgia,serif;font-size:15px;color:#5c3600">${s.ratingAvg!==null&&s.ratingAvg!==undefined?s.ratingAvg.toFixed(2):'—'}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);color:${getNpsColor(s.npsIndex)};font-family:Georgia,serif;font-size:15px">${s.npsIndex!==null&&s.npsIndex!==undefined?(s.npsIndex>0?'+':'')+s.npsIndex:'—'}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08);color:#065f46;font-weight:600">${s.hitRatio!==null&&s.hitRatio!==undefined?s.hitRatio.toFixed(1)+'%':'—'}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${s.promoterPct!==null?s.promoterPct+'%':'—'}</td><td style="padding:10px 14px;border-bottom:1px solid rgba(120,80,10,0.08)">${s.detractorPct!==null?s.detractorPct+'%':'—'}</td></tr>`;}).join('');
+  const html=`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Performance Report — ${collegeName}</title><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:Arial,sans-serif;background:#fdf8ed;color:#2a1800;font-size:13px;line-height:1.6;}.rh{background:linear-gradient(135deg,#4a2800,#7a4f00,#a06e00);color:#fde9a0;padding:28px 40px;display:flex;align-items:center;justify-content:space-between;}.rh h1{font-family:Georgia,serif;font-size:26px;font-weight:400;}.rb{padding:36px 40px;max-width:1100px;margin:0 auto;}.sec{margin-bottom:40px;}.st{font-family:Georgia,serif;font-size:20px;color:#5c3600;border-bottom:2px solid #e6b84a;padding-bottom:10px;margin-bottom:18px;}table{width:100%;border-collapse:collapse;font-size:13px;}.ncard{display:inline-flex;flex-direction:column;align-items:center;padding:16px 24px;border-radius:12px;margin:4px;}@media print{.rh{-webkit-print-color-adjust:exact;print-color-adjust:exact;}thead tr{-webkit-print-color-adjust:exact;print-color-adjust:exact;}.pb{page-break-before:always;}}</style></head><body><div class="rh"><div><h1>Performance Report</h1><p>${collegeName}</p></div><div style="text-align:right;font-size:11px;opacity:0.75"><div>Generated: ${now}</div><div>${MENTORS.length} mentors · ${DEPT_LIST.length} depts</div></div></div><div class="rb"><div class="sec"><div class="st">NPS Overview</div><div style="background:linear-gradient(135deg,#4a2800,#7a4f00);border-radius:14px;padding:24px;margin-bottom:20px;display:flex;gap:32px;align-items:center;flex-wrap:wrap;"><div><div style="font-size:10px;color:rgba(253,233,160,0.6);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">NPS Index</div><div style="font-family:Georgia,serif;font-size:56px;color:#f5c842;line-height:1">${npsDisplay}</div><div style="font-size:12px;color:rgba(253,233,160,0.7);margin-top:6px">${getNpsLabel(npsIndex)}</div></div><div style="display:flex;gap:24px;flex-wrap:wrap;"><div class="ncard" style="background:#d1fae5;"><div style="font-family:Georgia,serif;font-size:36px;color:#065f46">${npsTotal>0?promoters:'—'}</div><div style="font-size:10px;font-weight:600;color:#065f46;text-transform:uppercase;letter-spacing:0.09em;margin-top:4px">Promoters</div><div style="font-size:11px;color:#065f46">${promoPct}% · Score 9–10</div></div><div class="ncard" style="background:#fef3c7;"><div style="font-family:Georgia,serif;font-size:36px;color:#78350f">${npsTotal>0?passives:'—'}</div><div style="font-size:10px;font-weight:600;color:#78350f;text-transform:uppercase;letter-spacing:0.09em;margin-top:4px">Passives</div><div style="font-size:11px;color:#78350f">${passPct}% · Score 7–8</div></div><div class="ncard" style="background:#fee2e2;"><div style="font-family:Georgia,serif;font-size:36px;color:#7f1d1d">${npsTotal>0?detractors:'—'}</div><div style="font-size:10px;font-weight:600;color:#7f1d1d;text-transform:uppercase;letter-spacing:0.09em;margin-top:4px">Detractors</div><div style="font-size:11px;color:#7f1d1d">${detrPct}% · Score 1–6</div></div></div></div></div><div class="sec pb"><div class="st">Trend Over Time · Sep 2025–Apr 2026</div><table>${tableHead(['Month','Responses','Avg Rating','NPS Index','Hit Ratio','Promoters %','Detractors %'])}<tbody>${trendRows}</tbody></table><p style="font-size:11px;color:#c09840;margin-top:10px;">* Hit Ratio = Actual Responses ÷ Expected Responses × 100%</p></div><div class="sec pb"><div class="st">Mentor Rankings (Bayesian)</div><table>${tableHead(['Rank','Mentor','Department(s)','Bayesian Score','Avg Rating','Responses','Status'])}<tbody>${mentorRows}</tbody></table><div style="font-size:11px;color:#c09840;margin-top:10px">* Bayesian = (GlobalMean × ΣResponses + AvgRating × MentorResponses) / (ΣResponses + MentorResponses)</div></div></div></body></html>`;
   const blob=new Blob([html],{type:'text/html;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`Report-${collegeName.replace(/[^a-z0-9]/gi,'-')}-${new Date().toISOString().split('T')[0]}.html`;a.click();URL.revokeObjectURL(a.href);
 }
