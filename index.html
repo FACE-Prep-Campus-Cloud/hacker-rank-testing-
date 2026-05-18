@@ -617,14 +617,13 @@ tbody tr{transition:background 0.12s;}
       <div id="mentorTableSummaryBar" style="display:flex;align-items:center;gap:24px;padding:14px 22px;background:linear-gradient(135deg,#4a2800,#7a4f00);flex-wrap:wrap;">
         <div style="color:#fde9a0;font-size:12px;"><span style="opacity:0.6;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:2px;">Global Mean</span><span id="mtSumGlobalMean" style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;">—</span></div>
         <div style="color:#fde9a0;font-size:12px;"><span style="opacity:0.6;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:2px;">Σ Total Responses</span><span id="mtSumTotalResp" style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;">—</span></div>
-        <div style="color:#fde9a0;font-size:12px;"><span style="opacity:0.6;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:2px;">Σ Avg Rating × Responses</span><span id="mtSumAvgXResp" style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;">—</span></div>
         <div style="margin-left:auto;"><span class="badge badge-gold" id="mentorTableCountBadge">—</span></div>
       </div>
     </div>
     <div id="deptStatsPanelWrap" style="display:none;"></div>
     <div class="card" style="padding:0;overflow:hidden">
       <div class="table-wrap">
-        <!-- ▼ TABLE HEADER: when dept filter is active, avg rating & responses show dept-specific values -->
+        <!-- ▼ TABLE HEADER: removed Avg Rating × Responses column -->
         <table id="mentorBayesianTable">
           <thead><tr>
             <th>Rank</th>
@@ -632,11 +631,10 @@ tbody tr{transition:background 0.12s;}
             <th>Department</th>
             <th id="thAvgRating">Average Rating</th>
             <th id="thTotalResponses">Total Responses</th>
-            <th>Avg Rating × Responses</th>
             <th>Bayesian Value</th>
             <th>Status</th>
           </tr></thead>
-          <tbody id="mentorTableBody"><tr><td colspan="8" style="text-align:center;padding:40px;color:var(--ink3)">Select a college to view mentor data</td></tr></tbody>
+          <tbody id="mentorTableBody"><tr><td colspan="7" style="text-align:center;padding:40px;color:var(--ink3)">Select a college to view mentor data</td></tr></tbody>
         </table>
       </div>
       <div style="padding:12px 22px;font-size:11px;color:var(--ink4);border-top:1px solid var(--border);" id="mentorTableFootnote">* Bayesian = (Global Mean × Σ Responses + Avg Rating × Mentor Responses) / (Σ Responses + Mentor Responses)</div>
