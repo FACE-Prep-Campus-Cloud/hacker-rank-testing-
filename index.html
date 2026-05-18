@@ -350,11 +350,11 @@ tbody tr{transition:background 0.12s;}
 
 <aside class="sidebar" id="mainSidebar">
   <div class="nav-group-label">Analytics</div>
-  <div class="nav-item active" onclick="showPanel('landing',this)"><span class="nav-icon">⊞</span> College Overview</div>
-  <div class="nav-item" onclick="showPanel('summary',this)"><span class="nav-icon">▦</span> Summary</div>
-  <div class="nav-item" onclick="showPanel('mentors',this)"><span class="nav-icon">◉</span> Mentor Performance</div>
-  <div class="nav-item" onclick="showPanel('nps',this)"><span class="nav-icon">◈</span> NPS Analysis</div>
-  <div class="nav-item" onclick="showPanel('trends',this)"><span class="nav-icon">▶︎</span> Trend Over Time</div>
+  <div class="nav-item active" id="navLanding" onclick="showPanel('landing',this)"><span class="nav-icon">⊞</span> College Overview</div>
+  <div class="nav-item" id="navSummary" onclick="showPanel('summary',this)"><span class="nav-icon">▦</span> Summary</div>
+  <div class="nav-item" id="navMentors" onclick="showPanel('mentors',this)"><span class="nav-icon">◉</span> Mentor Performance</div>
+  <div class="nav-item" id="navNps" onclick="showPanel('nps',this)"><span class="nav-icon">◈</span> NPS Analysis</div>
+  <div class="nav-item" id="navTrends" onclick="showPanel('trends',this)"><span class="nav-icon">▶︎</span> Trend Over Time</div>
   <div class="sidebar-footer">
     <div class="sidebar-footer-label">Data Source</div>
     <div class="sidebar-footer-val">Google Sheets (Live)</div>
@@ -398,10 +398,7 @@ tbody tr{transition:background 0.12s;}
         <div style="font-size:13px;color:rgba(253,233,160,0.6);margin-top:5px;" id="landingHeroSub">Loading data from Google Sheets…</div>
       </div>
       <div style="display:flex;gap:24px;flex-wrap:wrap;">
-        <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:28px;color:#f5c842;line-height:1;" id="lhsTotal">—</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(253,233,160,0.5);margin-top:4px;">Colleges</div></div>
-        <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:28px;color:#f5c842;line-height:1;" id="lhsRating">—</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(253,233,160,0.5);margin-top:4px;">Avg Rating</div></div>
-        <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:28px;color:#f5c842;line-height:1;" id="lhsNps">—</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(253,233,160,0.5);margin-top:4px;">Avg NPS</div></div>
-        <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:28px;color:#f5c842;line-height:1;" id="lhsHit">—</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(253,233,160,0.5);margin-top:4px;">Avg Hit Ratio</div></div>
+        <div style="text-align:center;"><div style="font-family:var(--font-display);font-size:28px;color:#f5c842;line-height:1;" id="lhsTotal">—</div><div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:rgba(253,233,160,0.5);margin-top:4px;">Total Colleges</div></div>
       </div>
     </div>
 
@@ -839,15 +836,8 @@ function landingParseCSV(text){
       });
       landingData.forEach((r,i)=>r.rank=i+1);
 
-      /* hero stats */
-      const rats=landingData.map(r=>r.rating).filter(v=>v!==null);
-      const npss=landingData.map(r=>r.nps).filter(v=>v!==null);
-      const hits=landingData.map(r=>r.hit).filter(v=>v!==null);
+      /* hero stats - only college count */
       document.getElementById('lhsTotal').textContent=landingData.length;
-      document.getElementById('lhsRating').textContent=rats.length?(rats.reduce((a,b)=>a+b,0)/rats.length).toFixed(2):'—';
-      const avgNps=npss.length?Math.round(npss.reduce((a,b)=>a+b,0)/npss.length):null;
-      document.getElementById('lhsNps').textContent=avgNps!==null?(avgNps>0?'+':'')+avgNps:'—';
-      document.getElementById('lhsHit').textContent=hits.length?(hits.reduce((a,b)=>a+b,0)/hits.length).toFixed(1)+'%':'—';
       document.getElementById('landingHeroSub').textContent=`${landingData.length} colleges · Last updated ${new Date().toLocaleTimeString()}`;
       landingSetStatus('ok',`Loaded ${landingData.length} colleges · ${new Date().toLocaleTimeString()}`);
       landingLoaded=true;
@@ -931,6 +921,7 @@ function landingFilterRender(){
     const rankBadge=rc
       ?`<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:${rc.bg};color:${rc.color};font-size:11px;font-weight:700;">${r.rank}</span>`
       :`<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--bg2);border:1px solid var(--border2);font-size:11px;color:var(--ink3);">${r.rank}</span>`;
+    const collegeNameLink=`<span style="font-weight:500;color:#7a4f00;cursor:pointer;text-decoration:underline;text-underline-offset:2px;" onclick="selectCollegeByName('${r.college.replace(/'/g,"\\'")}')">${r.college}</span>`;
     const ratingCell=r.rating!==null
       ?`<span class="badge ${landingRatingClass(r.rating)}" style="font-size:12px;">⭐ ${r.rating.toFixed(2)} / 5 &nbsp;<span style="font-size:10px;opacity:0.7;">${landingRatingLabel(r.rating)}</span></span>`
       :`<span style="color:var(--ink3);">—</span>`;
@@ -945,12 +936,17 @@ function landingFilterRender(){
     </div>`;
     return`<tr>
       <td style="text-align:center;">${rankBadge}</td>
-      <td style="font-weight:500;color:var(--ink);font-size:13px;">${r.college}</td>
+      <td style="font-size:13px;">${collegeNameLink}</td>
       <td style="text-align:center;">${ratingCell}</td>
       <td style="text-align:center;font-family:var(--font-display);font-size:17px;color:${landingNpsColor(r.nps)};">${npsDisplay}</td>
       <td>${hitCell}</td>
     </tr>`;
   }).join('');
+}
+
+function selectCollegeByName(collegeName){
+  const idx=COLLEGES.findIndex(c=>c.name===collegeName);
+  if(idx>=0)selectCollege(idx);
 }
 
 /* ═══════════════════════════════════════════
@@ -994,6 +990,17 @@ function selectCollege(idx){
   document.getElementById('logoInstitutionName').textContent=currentCollege.name;
   document.getElementById('collegeDropdown').classList.remove('open');
   document.getElementById('collegeSelectBtn').classList.remove('open');
+  
+  // Hide College Overview nav item and show others
+  document.getElementById('navLanding').style.display='none';
+  document.getElementById('navSummary').style.display='flex';
+  document.getElementById('navMentors').style.display='flex';
+  document.getElementById('navNps').style.display='flex';
+  document.getElementById('navTrends').style.display='flex';
+  
+  // Switch to Summary panel
+  showPanel('summary',document.getElementById('navSummary'));
+  
   loadSheetData();
 }
 function refreshData(){
@@ -1046,9 +1053,6 @@ async function loadSheetData(){
   });
 }
 
-/* ═══════════════════════════════════════════
-   DEDICATED TREND SHEET
-═══════════════════════════════════════════ */
 async function loadDedicatedTrendSheet(collegeName){
   const config=DEDICATED_TREND_SHEETS[collegeName];if(!config)return;
   const{sheetId,gids}=config;
