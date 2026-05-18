@@ -207,7 +207,7 @@ tbody tr{transition:background 0.12s;}
 
 <aside class="sidebar" id="mainSidebar">
   <div class="nav-group-label">Analytics</div>
-  <div class="nav-item active" id="navLanding" onclick="showPanel('landing',this)"><span class="nav-icon"></span> College Overview</div>
+  <div class="nav-item active" id="navLanding" onclick="showPanel('landing',this)"><span class="nav-icon">⊞</span> College Overview</div>
   <div class="sidebar-footer">
     <div class="sidebar-footer-label">Data Source</div>
     <div class="sidebar-footer-val">Google Sheets (Live)</div>
@@ -365,7 +365,7 @@ function buildDropdown(){
   const overviewItem = document.createElement('div');
   overviewItem.className = 'college-dropdown-item overview-item active';
   overviewItem.id = 'dditem-overview';
-  overviewItem.innerHTML = '<span class="item-dot"></span>  College Overview (All)';
+  overviewItem.innerHTML = '<span class="item-dot"></span> ⊞ College Overview (All)';
   overviewItem.onclick = () => selectOverview();
   dd.appendChild(overviewItem);
 
