@@ -40,6 +40,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-siz
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 @keyframes dropDown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
 @keyframes countUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideIn{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
 
 .loading-text{font-size:13px;color:var(--ink3);font-weight:500;}
 .error-message{max-width:500px;padding:20px;background:var(--rose-lt);border:1px solid var(--rose);border-radius:var(--radius);color:var(--rose);font-size:13px;line-height:1.6;display:none;}
@@ -140,6 +141,60 @@ body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-siz
 .badge-blue{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;}
 .badge-amber{background:#fef3c7;color:#78350f;border:1px solid #fcd34d;}
 .badge-rose{background:#fee2e2;color:#7f1d1d;border:1px solid #fca5a5;}
+
+/* ═══ DEPARTMENT STATS PANEL ═══ */
+.dept-stats-panel{
+  background:linear-gradient(135deg,#fff9ee 0%,#fffdf7 100%);
+  border:1.5px solid var(--accent-md);
+  border-left:4px solid var(--gold-mid);
+  border-radius:var(--radius);
+  padding:0;
+  overflow:hidden;
+  box-shadow:var(--shadow-md);
+  animation:slideIn 0.3s cubic-bezier(.22,1,.36,1);
+}
+.dept-stats-header{
+  background:linear-gradient(135deg,#4a2800 0%,#7a4f00 60%,#a06e00 100%);
+  padding:14px 22px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.dept-stats-title{
+  font-family:var(--font-display);font-size:17px;color:#fde9a0;
+}
+.dept-stats-subtitle{font-size:11px;color:rgba(253,233,160,0.65);margin-top:2px;}
+.dept-stats-body{padding:18px 22px;display:flex;flex-direction:column;gap:16px;}
+.dept-kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.dept-kpi-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-top:3px solid var(--gold-mid);
+  border-radius:var(--radius-sm);
+  padding:14px 16px;
+  text-align:center;
+  transition:box-shadow 0.2s,transform 0.2s;
+}
+.dept-kpi-card:hover{box-shadow:var(--shadow-sm);transform:translateY(-1px);}
+.dept-kpi-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink3);margin-bottom:4px;}
+.dept-kpi-val{font-family:var(--font-display);font-size:26px;color:var(--gold-dark);line-height:1.1;}
+.dept-kpi-sub{font-size:10px;color:var(--ink4);margin-top:3px;}
+.dept-mentor-bars{margin-top:4px;}
+.dept-mentor-bar-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink3);margin-bottom:10px;}
+.dept-bar-item{display:grid;grid-template-columns:160px 1fr 44px 80px;gap:10px;align-items:center;margin-bottom:8px;}
+.dept-bar-name{font-size:12px;font-weight:500;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dept-bar-outer{height:18px;background:var(--bg2);border-radius:20px;overflow:hidden;}
+.dept-bar-inner{height:100%;border-radius:20px;transition:width 0.9s cubic-bezier(.22,1,.36,1);}
+.dept-bar-score{font-size:12px;font-weight:700;color:var(--gold-dark);text-align:right;}
+.dept-bar-badge{display:inline-flex;align-items:center;justify-content:center;}
+.dept-comparison-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px;}
+.dept-vs-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 16px;}
+.dept-vs-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);margin-bottom:6px;}
+.dept-vs-content{display:flex;align-items:baseline;gap:6px;}
+.dept-vs-val{font-family:var(--font-display);font-size:22px;color:var(--gold-dark);}
+.dept-vs-delta{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;}
+.dept-vs-delta.up{background:#d1fae5;color:#065f46;}
+.dept-vs-delta.down{background:#fee2e2;color:#7f1d1d;}
+.dept-vs-delta.flat{background:var(--bg2);border:1px solid var(--border2);color:var(--ink3);}
+/* ═══ END DEPT STATS ═══ */
 
 /* NPS */
 .nps-overview-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 26px;box-shadow:var(--shadow-sm);}
@@ -304,12 +359,17 @@ tbody tr{transition:background 0.12s;}
   .trend-chart-card.full-width{grid-column:auto;}
   .analysis-grid{grid-template-columns:1fr;}
   .analysis-box.neutral-wrap{grid-column:auto;}
+  .dept-kpi-row{grid-template-columns:1fr 1fr;}
+  .dept-bar-item{grid-template-columns:120px 1fr 40px 70px;}
+  .dept-comparison-row{grid-template-columns:1fr;}
 }
 @media(max-width:480px){
   .metrics-row,.trend-kpi-row{grid-template-columns:1fr;}
   .nps-segment-row{grid-template-columns:1fr;}
   .page-title{font-size:22px;}
   .download-btn{padding:8px 10px;font-size:11px;}
+  .dept-kpi-row{grid-template-columns:1fr 1fr;}
+  .dept-bar-item{grid-template-columns:90px 1fr 36px;}
 }
 </style>
 </head>
@@ -342,8 +402,6 @@ tbody tr{transition:background 0.12s;}
     <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:12px;">Question-by-question breakdown</div>
     <div id="mmQRows"></div>
     <div style="font-size:11px;color:var(--ink4);border-top:1px solid var(--border);padding-top:10px;margin-top:16px;">* Yes/No counts are aggregated across all subjects this mentor teaches.</div>
-
-    <!-- AI DESCRIPTIVE ANALYSIS SECTION -->
     <div class="analysis-section" id="mmAnalysisSection">
       <div class="analysis-header">
         <div class="analysis-title">Descriptive Analysis</div>
@@ -552,13 +610,21 @@ tbody tr{transition:background 0.12s;}
 
   <!-- MENTOR PERFORMANCE PANEL -->
   <div class="panel" id="panel-mentors">
-    <div class="card" style="padding:0;overflow:hidden">
+
+    <!-- GLOBAL SUMMARY BAR (shown when "All" is selected) -->
+    <div id="mentorGlobalSummaryBar" class="card" style="padding:0;overflow:hidden;">
       <div id="mentorTableSummaryBar" style="display:flex;align-items:center;gap:24px;padding:14px 22px;background:linear-gradient(135deg,#4a2800,#7a4f00);flex-wrap:wrap;">
         <div style="color:#fde9a0;font-size:12px;"><span style="opacity:0.6;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:2px;">Global Mean</span><span id="mtSumGlobalMean" style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;">—</span></div>
         <div style="color:#fde9a0;font-size:12px;"><span style="opacity:0.6;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:2px;">Σ Total Responses</span><span id="mtSumTotalResp" style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;">—</span></div>
         <div style="color:#fde9a0;font-size:12px;"><span style="opacity:0.6;font-size:10px;text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:2px;">Σ Avg Rating × Responses</span><span id="mtSumAvgXResp" style="font-family:'DM Serif Display',Georgia,serif;font-size:18px;">—</span></div>
         <div style="margin-left:auto;"><span class="badge badge-gold" id="mentorTableCountBadge">—</span></div>
       </div>
+    </div>
+
+    <!-- DEPT STATS PANEL (shown when a specific dept is selected) -->
+    <div id="deptStatsPanelWrap" style="display:none;"></div>
+
+    <div class="card" style="padding:0;overflow:hidden">
       <div class="table-wrap">
         <table id="mentorBayesianTable">
           <thead><tr><th>Rank</th><th>Mentor Name</th><th>Department</th><th>Average Rating</th><th>Total Responses</th><th>Avg Rating × Responses</th><th>Bayesian Value</th><th>Status</th></tr></thead>
@@ -1192,16 +1258,199 @@ function updateDeptFilters(){
     btn.onclick=function(){setDeptFilter(dept,this);};fr.appendChild(btn);
   });
 }
+
 function setDeptFilter(val,btn){
   currentDeptFilter=val;
   document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   if(btn)btn.classList.add('active');
-  if(currentDetailPanel==='mentors'){renderMentorTable();renderInsightCharts(val);}
+  if(currentDetailPanel==='mentors'){
+    renderMentorTable();
+    renderInsightCharts(val);
+    renderDeptStatsPanel(val);
+  }
 }
+
 function getFilteredMentors(filterDept){
   let list=!filterDept||filterDept==='all'?[...MENTORS]:MENTORS.filter(m=>m.depts.some(d=>d===filterDept));
   list.forEach((m,idx)=>{m.filteredRank=idx+1;m.filteredPercentile=list.length>1?Math.round((1-idx/(list.length-1))*100):100;});
   return list;
+}
+
+/* ═══════════════════════════════════════════
+   DEPARTMENT STATS PANEL
+═══════════════════════════════════════════ */
+function renderDeptStatsPanel(dept){
+  const globalBar=document.getElementById('mentorGlobalSummaryBar');
+  const deptWrap=document.getElementById('deptStatsPanelWrap');
+
+  if(!dept||dept==='all'){
+    // Show global bar, hide dept panel
+    globalBar.style.display='block';
+    deptWrap.style.display='none';
+    deptWrap.innerHTML='';
+    return;
+  }
+
+  // Hide global bar, show dept panel
+  globalBar.style.display='none';
+  deptWrap.style.display='block';
+
+  const deptMentors=MENTORS.filter(m=>m.depts.some(d=>d===dept));
+  if(!deptMentors.length){
+    deptWrap.innerHTML=`<div class="dept-stats-panel"><div class="dept-stats-header"><div><div class="dept-stats-title">${dept}</div><div class="dept-stats-subtitle">No mentor data available</div></div></div></div>`;
+    return;
+  }
+
+  // Compute dept stats
+  const deptEntries=TABLE_DATA.filter(r=>r.dept===dept);
+  const deptRatings=deptEntries.map(r=>r.rating);
+  const deptAvgRating=deptRatings.length>0?deptRatings.reduce((a,b)=>a+b,0)/deptRatings.length:0;
+  const deptTotalResponses=deptRatings.length;
+  const deptMentorCount=deptMentors.length;
+
+  // Global avg for comparison
+  const allRatings=TABLE_DATA.map(r=>r.rating);
+  const globalAvg=allRatings.length>0?allRatings.reduce((a,b)=>a+b,0)/allRatings.length:0;
+  const ratingDiff=deptAvgRating-globalAvg;
+  const ratingDiffCls=ratingDiff>0.05?'up':ratingDiff<-0.05?'down':'flat';
+  const ratingDiffTxt=(ratingDiff>0?'+':'')+ratingDiff.toFixed(2)+' vs college avg';
+
+  // Top mentor in dept
+  const topMentor=deptMentors[0];
+
+  // Bottom mentor
+  const bottomMentor=deptMentors[deptMentors.length-1];
+
+  // Subject count
+  const deptSubjects=new Set(deptEntries.map(r=>r.subject));
+
+  // Sorted mentors for bar chart
+  const sortedDeptMentors=[...deptMentors].sort((a,b)=>b.rating-a.rating);
+
+  // Color helper
+  function barColor(r){if(r>=4.3)return'#10b981';if(r>=4.0)return'#c48a00';if(r>=3.5)return'#f59e0b';return'#ef4444';}
+
+  const mentorBarsHTML=sortedDeptMentors.map(m=>{
+    const w=Math.round((m.rating/5)*100);
+    const bc=barColor(m.rating);
+    return`<div class="dept-bar-item">
+      <div class="dept-bar-name" title="${m.name}">${m.name}</div>
+      <div class="dept-bar-outer"><div class="dept-bar-inner" style="width:0%;background:${bc};" data-w="${w}"></div></div>
+      <div class="dept-bar-score" style="color:${bc};">${m.rating.toFixed(2)}</div>
+      <div class="dept-bar-badge">${statusBadge(m.rating)}</div>
+    </div>`;
+  }).join('');
+
+  // Rating distribution in dept
+  const excellent=deptMentors.filter(m=>m.rating>=4.3).length;
+  const good=deptMentors.filter(m=>m.rating>=4.0&&m.rating<4.3).length;
+  const average=deptMentors.filter(m=>m.rating>=3.5&&m.rating<4.0).length;
+  const needsWork=deptMentors.filter(m=>m.rating<3.5).length;
+
+  deptWrap.innerHTML=`
+  <div class="dept-stats-panel">
+    <div class="dept-stats-header">
+      <div>
+        <div class="dept-stats-title">📊 ${dept}</div>
+        <div class="dept-stats-subtitle">${deptMentorCount} mentor${deptMentorCount!==1?'s':''} · ${deptSubjects.size} subject${deptSubjects.size!==1?'s':''} · ${deptTotalResponses} total responses</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <span style="display:inline-flex;align-items:center;gap:5px;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:600;background:rgba(245,200,66,0.2);border:1px solid rgba(245,200,66,0.5);color:#fde9a0;">
+          Dept Filter Active
+        </span>
+      </div>
+    </div>
+    <div class="dept-stats-body">
+
+      <!-- KPI Row -->
+      <div class="dept-kpi-row">
+        <div class="dept-kpi-card" style="border-top-color:var(--gold-mid);">
+          <div class="dept-kpi-label">Dept Avg Rating</div>
+          <div class="dept-kpi-val">${deptAvgRating.toFixed(2)}</div>
+          <div class="dept-kpi-sub">out of 5.00</div>
+        </div>
+        <div class="dept-kpi-card" style="border-top-color:#10b981;">
+          <div class="dept-kpi-label">Total Responses</div>
+          <div class="dept-kpi-val" style="color:#065f46;">${deptTotalResponses}</div>
+          <div class="dept-kpi-sub">feedback entries</div>
+        </div>
+        <div class="dept-kpi-card" style="border-top-color:#c48a00;">
+          <div class="dept-kpi-label">Mentors</div>
+          <div class="dept-kpi-val">${deptMentorCount}</div>
+          <div class="dept-kpi-sub">${deptSubjects.size} subjects</div>
+        </div>
+        <div class="dept-kpi-card" style="border-top-color:#f5c842;">
+          <div class="dept-kpi-label">Top Performer</div>
+          <div class="dept-kpi-val" style="font-size:14px;color:var(--gold-dark);">${topMentor.name.length>14?topMentor.name.slice(0,13)+'…':topMentor.name}</div>
+          <div class="dept-kpi-sub">${topMentor.rating.toFixed(2)} avg rating</div>
+        </div>
+        <div class="dept-kpi-card" style="border-top-color:#6366f1;">
+          <div class="dept-kpi-label">Rating vs College</div>
+          <div class="dept-kpi-val" style="font-size:18px;color:${ratingDiffCls==='up'?'#065f46':ratingDiffCls==='down'?'#7f1d1d':'var(--gold-dark)'};">
+            ${ratingDiff>0?'▲ ':'▼ '}${Math.abs(ratingDiff).toFixed(2)}
+          </div>
+          <div class="dept-kpi-sub">${ratingDiffCls==='up'?'above avg':ratingDiffCls==='down'?'below avg':'at avg'}</div>
+        </div>
+      </div>
+
+      <!-- Comparison row -->
+      <div class="dept-comparison-row">
+        <div class="dept-vs-card">
+          <div class="dept-vs-label">📈 Dept Average vs College Average</div>
+          <div class="dept-vs-content">
+            <div class="dept-vs-val">${deptAvgRating.toFixed(2)}</div>
+            <span class="dept-vs-delta ${ratingDiffCls}">${ratingDiff>0?'+':''}${ratingDiff.toFixed(2)} vs ${globalAvg.toFixed(2)}</span>
+          </div>
+          <div style="margin-top:10px;">
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-bottom:4px;">
+              <span>Dept Avg</span><span>College Avg</span>
+            </div>
+            <div style="height:8px;background:var(--bg2);border-radius:20px;overflow:hidden;position:relative;">
+              <div style="position:absolute;left:0;top:0;height:100%;width:${Math.round(deptAvgRating/5*100)}%;background:${ratingDiffCls==='up'?'#10b981':ratingDiffCls==='down'?'#ef4444':'#c48a00'};border-radius:20px;transition:width 1s;"></div>
+              <div style="position:absolute;left:0;top:0;height:100%;width:${Math.round(globalAvg/5*100)}%;border-right:2px dashed #c48a00;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="dept-vs-card">
+          <div class="dept-vs-label">🏅 Mentor Rating Distribution</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <span style="font-family:var(--font-display);font-size:20px;color:#065f46;">${excellent}</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:#d1fae5;color:#065f46;">Excellent</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <span style="font-family:var(--font-display);font-size:20px;color:#065f46;">${good}</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:#d1fae5;border:1px solid #6ee7b7;color:#065f46;">Good</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <span style="font-family:var(--font-display);font-size:20px;color:#78350f;">${average}</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:#fef3c7;color:#78350f;">Average</span>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:3px;">
+              <span style="font-family:var(--font-display);font-size:20px;color:#7f1d1d;">${needsWork}</span>
+              <span style="display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;background:#fee2e2;color:#7f1d1d;">Needs Work</span>
+            </div>
+          </div>
+          <div style="margin-top:10px;font-size:10px;color:var(--ink4);">Excellent ≥4.3 · Good ≥4.0 · Average ≥3.5 · Needs Work &lt;3.5</div>
+        </div>
+      </div>
+
+      <!-- Mentor Rating Bars -->
+      <div class="dept-mentor-bars">
+        <div class="dept-mentor-bar-title">All Mentors in ${dept} — Sorted by Rating</div>
+        <div id="deptMentorBarsInner">${mentorBarsHTML}</div>
+      </div>
+
+    </div>
+  </div>`;
+
+  // Animate bars
+  setTimeout(()=>{
+    document.querySelectorAll('.dept-bar-inner').forEach(bar=>{
+      bar.style.transition='width 0.9s cubic-bezier(.22,1,.36,1)';
+      bar.style.width=bar.getAttribute('data-w')+'%';
+    });
+  },80);
 }
 
 /* ═══════════════════════════════════════════
@@ -1210,6 +1459,7 @@ function getFilteredMentors(filterDept){
 function renderAllData(){
   renderMentorTable();renderInsightCharts(currentDeptFilter);
   renderNPSSummary();renderNPSPanel();renderTrendPanel();
+  renderDeptStatsPanel(currentDeptFilter);
   if(!chartInstances._summaryInit){initSummaryCharts();chartInstances._summaryInit=true;}
   else updateSummaryCharts();
 }
@@ -1591,7 +1841,6 @@ function openMentorModal(mentorName){
     </div>`;
   }).join('');
 
-  // Generate descriptive analysis
   generateMentorAnalysis(m);
   document.getElementById('mentorModalOverlay').classList.add('open');
 }
@@ -1614,7 +1863,6 @@ function generateMentorAnalysis(m){
   const totalAll=m.qs.reduce((s,q)=>s+q.y+q.n,0);
   const overallPct=totalAll>0?Math.round(totalYes/totalAll*100):0;
 
-  // Verdict
   let verdictText, verdictBg, verdictColor, verdictBorder, verdictIcon;
   if(m.rating>=4.3&&overallPct>=60){
     verdictText=`This mentor is a <strong>strong performer</strong>. Students rate them highly on both quantitative scores and qualitative feedback, indicating consistently excellent teaching quality.`;
@@ -1630,40 +1878,28 @@ function generateMentorAnalysis(m){
     verdictBg='#fef3c7';verdictColor='#78350f';verdictBorder='#fcd34d';verdictIcon='◇';
   }
 
-  // Strengths list
   const strengthHTML=strengths.length
     ? strengths.map(s=>`<li style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(6,95,70,0.12);"><span style="font-weight:600;color:#065f46;">${s.label}</span> <span style="font-size:11px;background:#d1fae5;color:#065f46;border-radius:20px;padding:1px 8px;margin-left:4px;">${s.pct}% yes</span><div style="font-size:11px;color:#047857;margin-top:3px;line-height:1.5;">"${s.question}" — ${s.yes} students confirmed yes out of ${s.yes+s.no}.</div></li>`).join('')
     : '<li style="color:#6b7280;font-size:12px;">No standout strengths detected above the 65% threshold in this dataset.</li>';
 
-  // Weaknesses list
   const weaknessHTML=weaknesses.length
     ? weaknesses.map(w=>`<li style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(127,29,29,0.12);"><span style="font-weight:600;color:#7f1d1d;">${w.label}</span> <span style="font-size:11px;background:#fee2e2;color:#7f1d1d;border-radius:20px;padding:1px 8px;margin-left:4px;">${w.pct}% yes</span><div style="font-size:11px;color:#991b1b;margin-top:3px;line-height:1.5;">"${w.question}" — ${w.no} students responded no out of ${w.yes+w.no}.</div></li>`).join('')
     : '<li style="color:#6b7280;font-size:12px;">No critical weaknesses detected below the 40% threshold. Good overall consistency.</li>';
 
-  // Neutral pills
   const neutralHTML=neutralAreas.length
     ? neutralAreas.map(n=>`<span class="neutral-pill">${n.label} <strong style="color:var(--ink2);">${n.pct}%</strong></span>`).join('')
     : '';
 
-  // Recommendation
   let recText;
   const wCount=weaknesses.length;
   const sCount=strengths.length;
-  if(wCount>=3){
-    recText=`<strong>Priority coaching needed.</strong> More than half the feedback dimensions fall below 40% positive. We recommend a structured improvement plan focusing on: <em>${weaknesses.map(w=>w.label.toLowerCase()).join(', ')}</em>. Consider peer observation sessions, student consultation meetings, and a formal review within the next cycle.`;
-  }else if(wCount===2){
-    recText=`Two clear focus areas identified: <strong>${weaknesses.map(w=>w.label).join('</strong> and <strong>')}</strong>. Targeted workshops or peer-mentoring in these specific areas would help round out this mentor's profile. A mid-cycle check-in is recommended.`;
-  }else if(wCount===1){
-    recText=`One improvement area stands out: <strong>${weaknesses[0].label}</strong>. Addressing this through focused professional development or student feedback sessions would significantly improve overall performance and student satisfaction.`;
-  }else if(sCount>=4){
-    recText=`<strong>Exceptional performer.</strong> This mentor excels across almost all dimensions. Consider nominating them as a <strong>peer mentor or faculty trainer</strong>. Their methods and approach could serve as a model for other mentors in the program.`;
-  }else if(sCount>=2){
-    recText=`Strong in several key areas. Encourage self-reflection exercises on the neutral dimensions to push towards consistent excellence. Sharing best practices with peers in their strong areas would benefit the broader team.`;
-  }else{
-    recText=`Performance is stable but shows room for growth. Encourage ongoing student interaction, self-assessment, and continued engagement with teaching methodologies to improve scores across all dimensions in the next cycle.`;
-  }
+  if(wCount>=3){recText=`<strong>Priority coaching needed.</strong> More than half the feedback dimensions fall below 40% positive. We recommend a structured improvement plan focusing on: <em>${weaknesses.map(w=>w.label.toLowerCase()).join(', ')}</em>. Consider peer observation sessions, student consultation meetings, and a formal review within the next cycle.`;}
+  else if(wCount===2){recText=`Two clear focus areas identified: <strong>${weaknesses.map(w=>w.label).join('</strong> and <strong>')}</strong>. Targeted workshops or peer-mentoring in these specific areas would help round out this mentor's profile. A mid-cycle check-in is recommended.`;}
+  else if(wCount===1){recText=`One improvement area stands out: <strong>${weaknesses[0].label}</strong>. Addressing this through focused professional development or student feedback sessions would significantly improve overall performance and student satisfaction.`;}
+  else if(sCount>=4){recText=`<strong>Exceptional performer.</strong> This mentor excels across almost all dimensions. Consider nominating them as a <strong>peer mentor or faculty trainer</strong>. Their methods and approach could serve as a model for other mentors in the program.`;}
+  else if(sCount>=2){recText=`Strong in several key areas. Encourage self-reflection exercises on the neutral dimensions to push towards consistent excellence. Sharing best practices with peers in their strong areas would benefit the broader team.`;}
+  else{recText=`Performance is stable but shows room for growth. Encourage ongoing student interaction, self-assessment, and continued engagement with teaching methodologies to improve scores across all dimensions in the next cycle.`;}
 
-  // Low response warning
   const lowRespNote=m.responses<20
     ? `<div class="low-response-note">⚠ Low response count (${m.responses} responses) — this analysis may not be statistically reliable. Interpret results with caution and seek more feedback in the next cycle.</div>`
     : '';
@@ -1673,7 +1909,6 @@ function generateMentorAnalysis(m){
       <span style="font-size:13px;margin-right:6px;">${verdictIcon}</span>
       <span style="font-size:12.5px;line-height:1.65;">${verdictText}</span>
     </div>
-
     <div class="analysis-grid">
       <div class="analysis-box strengths">
         <div class="analysis-box-title">✓ Strengths (≥65% positive)</div>
@@ -1690,14 +1925,11 @@ function generateMentorAnalysis(m){
         <div style="font-size:11px;color:var(--ink3);margin-top:8px;">These areas are functional but not standout strengths. Minor improvements could shift them into the "strength" category.</div>
       </div>`:''}
     </div>
-
     <div class="recommendation-box">
       <div class="recommendation-title">📋 Recommendation</div>
       <div class="recommendation-text">${recText}</div>
     </div>
-
     ${lowRespNote}
-
     <div style="font-size:10.5px;color:var(--ink4);margin-top:8px;padding-top:8px;border-top:1px solid var(--border);">
       Analysis thresholds: Strength ≥65% · Neutral 41–64% · Needs improvement ≤40% · Based on ${m.responses} student responses across ${m.subjects} subject(s).
     </div>`;
