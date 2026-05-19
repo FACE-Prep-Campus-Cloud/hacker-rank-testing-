@@ -1097,7 +1097,6 @@ function processDedicatedTrendData(rows,collegeName){
     let promoterPct=totalForPct>0?parseFloat(((promoterCount/totalForPct)*100).toFixed(1)):null;
     let passivePct=totalForPct>0?parseFloat(((passiveCount/totalForPct)*100).toFixed(1)):null;
     let detractorPct=totalForPct>0?parseFloat(((detractorCount/totalForPct)*100).toFixed(1)):null;
-    if(hitRatio!==null&&hitRatio<=1)hitRatio=parseFloat((hitRatio*100).toFixed(1));
     let finalNps=npsIndex;
     if(finalNps!==null&&Math.abs(finalNps)<=1)finalNps=Math.round(finalNps*100);
     cycleStats[cycleName]={cycle:cycleName,responses:responses||0,students:students||0,ratingAvg,npsIndex:finalNps,hitRatio,promoterPct,passivePct,detractorPct,promoterCount:promoterCount||0,passiveCount:passiveCount||0,detractorCount:detractorCount||0,mentorCount:mentorCount||MENTORS.length,mentorRatings:{}};
@@ -1997,7 +1996,6 @@ function landingParseCSV(text){
         const rating=colRating?parseFloat((row[colRating]||'').toString().replace(/[^0-9.\-]/g,'')):null;
         let nps=colNps?parseFloat((row[colNps]||'').toString().replace(/[^0-9.\-]/g,'')):null;
         let hit=colHit?parseFloat((row[colHit]||'').toString().replace(/[^0-9.]/g,'')):null;
-        if(hit!==null&&hit>0&&hit<=1)hit=parseFloat((hit*100).toFixed(1));
         if(nps!==null&&Math.abs(nps)<=1)nps=Math.round(nps*100);
         return{college,rating:isNaN(rating)?null:rating,nps:isNaN(nps)?null:nps,hit:isNaN(hit)?null:hit};
       }).filter(r=>r.college);
