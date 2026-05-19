@@ -1193,8 +1193,24 @@ function processTrendData(cycleMap,hasCycle,totalRows){
 /* ═══════════════════════ HELPERS ═══════════════════════ */
 function getNpsColor(index){if(index===null)return'#c48a00';if(index>=50)return'#065f46';if(index>=0)return'#c48a00';return'#7f1d1d';}
 function getNpsLabel(index){if(index===null)return'No NPS data in sheet';if(index>=70)return'Excellent · World Class';if(index>=50)return'Excellent';if(index>=30)return'Great';if(index>=0)return'Good';if(index>=-20)return'Needs Improvement';return'Critical';}
-function statusBadge(r){if(r>=4.3)return'<span class="badge badge-gold">Excellent</span>';if(r>=4.0)return'<span class="badge badge-green">Good</span>';if(r>=3.5)return'<span class="badge badge-amber">Average</span>';return'<span class="badge badge-rose">Needs work</span>';}
-function getStatusColor(r){if(r>=4.3)return'#10b981';if(r>=4.0)return'#c48a00';if(r>=3.5)return'#f59e0b';return'#ef4444';}
+function statusBadge(r){
+  if(r>=4.5)return'<span class="badge badge-gold">Outstanding</span>';
+  if(r>=4.3)return'<span class="badge badge-gold">Excellent</span>';
+  if(r>=4.0)return'<span class="badge badge-green">Very Good</span>';
+  if(r>=3.7)return'<span class="badge badge-blue">Good</span>';
+  if(r>=3.5)return'<span class="badge badge-amber">Average</span>';
+  if(r>=3.0)return'<span class="badge badge-rose">Below Average</span>';
+  return'<span class="badge badge-rose">Needs Improvement</span>';
+}
+function getStatusColor(r){
+  if(r>=4.5)return'#5c3600';  // Dark gold for outstanding
+  if(r>=4.3)return'#10b981';  // Green for excellent
+  if(r>=4.0)return'#059669';  // Darker green for very good
+  if(r>=3.7)return'#3b82f6';  // Blue for good
+  if(r>=3.5)return'#f59e0b';  // Amber for average
+  if(r>=3.0)return'#ef4444';  // Red for below average
+  return'#dc2626';            // Dark red for needs improvement
+}
 function deptStyle(d){if(!d)return{color:'#4a2e00',bg:'#fff3cc',border:'#e6b84a'};if(d.includes('BCA'))return{color:'#5c3600',bg:'#fde9a0',border:'#e6b84a'};if(d.includes('BBA'))return{color:'#3d2200',bg:'#f5c842',border:'#c48a00'};return{color:'#4a2e00',bg:'#fff3cc',border:'#e6b84a'};}
 function getMentorDeptQs(mentor,dept){if(!dept||dept==='all')return mentor.qs;return mentor.deptQs[dept]||[{y:0,n:0},{y:0,n:0},{y:0,n:0},{y:0,n:0},{y:0,n:0}];}
 function getMentorDeptRating(mentor,dept){if(!dept||dept==='all')return mentor.rating;const rs=mentor.deptRatings[dept];if(!rs||!rs.length)return mentor.rating;return parseFloat((rs.reduce((a,b)=>a+b,0)/rs.length).toFixed(2));}
@@ -1484,9 +1500,11 @@ function renderMentorTable(){
     const displayDept=deptLabel||m.depts.join(', ');
     const s=deptStyle(deptLabel||m.depts[0]||'');
     const displayRating=isDeptActive?getMentorDeptRating(m,currentDeptFilter):m.rating;
-    const displayResponses=isDeptActive?getMentorDeptResponses(m,currentDeptFilter):m.responses;
-    const displayAvgXResp=isDeptActive?(displayRating*displayResponses):m.avgXResponses;
-    const ratingColor=isDeptActive?getStatusColor(displayRating):'var(--gold-dark)';
+const displayResponses=isDeptActive?getMentorDeptResponses(m,currentDeptFilter):m.responses;
+const displayAvgXResp=isDeptActive?(displayRating*displayResponses):m.avgXResponses;
+const ratingColor=getStatusColor(displayRating);
+const ratingBg=displayRating>=4.5?'#fde9a0':displayRating>=4.3?'#d1fae5':displayRating>=4.0?'#a7f3d0':displayRating>=3.7?'#dbeafe':displayRating>=3.5?'#fef3c7':'#fee2e2';
+
     return`<tr>
       <td style="text-align:center;"><span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:${rankBg};border:${rankBorder};font-size:11px;font-weight:700;color:${rankColor};">${displayRank}</span></td>
       <td><button class="mentor-name-btn" data-mentor="${m.name.replace(/"/g,'&quot;')}" data-dept="${(deptLabel||'').replace(/"/g,'&quot;')}">${m.name}</button></td>
@@ -1558,10 +1576,34 @@ function generateMentorAnalysis(m,activeQs,activeRating,activeResponses,deptCtx)
   activeQs.forEach((q,i)=>{const tot=q.y+q.n;const yp=tot>0?Math.round(q.y/tot*100):0;if(yp>=65)strengths.push({label:Q_LABELS[i],pct:yp});else if(yp<=40)weaknesses.push({label:Q_LABELS[i],pct:yp});else neutralAreas.push({label:Q_LABELS[i],pct:yp});});
   const totalYes=activeQs.reduce((s,q)=>s+q.y,0);const totalAll=activeQs.reduce((s,q)=>s+q.y+q.n,0);const overallPct=totalAll>0?Math.round(totalYes/totalAll*100):0;
   let verdictText,verdictBg,verdictColor,verdictBorder,verdictIcon;
-  if(activeRating>=4.3&&overallPct>=60){verdictText=`This mentor is a <strong>strong performer</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''}.`;verdictBg='#d1fae5';verdictColor='#064e3b';verdictBorder='#6ee7b7';verdictIcon='✦';}
-  else if(activeRating>=4.0&&overallPct>=50){verdictText=`This mentor is a <strong>good performer</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''}.`;verdictBg='#fef3c7';verdictColor='#78350f';verdictBorder='#fcd34d';verdictIcon='◆';}
-  else if(activeRating<3.5||overallPct<40){verdictText=`This mentor <strong>needs focused attention</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''}.`;verdictBg='#fee2e2';verdictColor='#7f1d1d';verdictBorder='#fca5a5';verdictIcon='▲';}
-  else{verdictText=`This mentor shows <strong>average performance</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''}.`;verdictBg='#fef3c7';verdictColor='#78350f';verdictBorder='#fcd34d';verdictIcon='◇';}
+if(activeRating>=4.5&&overallPct>=70){
+  verdictText=`This mentor is an <strong>outstanding performer</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''} — among the top tier.`;
+  verdictBg='linear-gradient(135deg,#fde9a0,#f5c842)';verdictColor='#3d2200';verdictBorder='#c48a00';verdictIcon='★';
+}
+else if(activeRating>=4.3&&overallPct>=60){
+  verdictText=`This mentor is an <strong>excellent performer</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''}.`;
+  verdictBg='#d1fae5';verdictColor='#064e3b';verdictBorder='#6ee7b7';verdictIcon='✦';
+}
+else if(activeRating>=4.0&&overallPct>=50){
+  verdictText=`This mentor is a <strong>very good performer</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''}.`;
+  verdictBg='#a7f3d0';verdictColor='#065f46';verdictBorder='#6ee7b7';verdictIcon='◆';
+}
+else if(activeRating>=3.7&&overallPct>=45){
+  verdictText=`This mentor is a <strong>good performer</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''}.`;
+  verdictBg='#dbeafe';verdictColor='#1e40af';verdictBorder='#93c5fd';verdictIcon='◇';
+}
+else if(activeRating>=3.5||overallPct>=40){
+  verdictText=`This mentor shows <strong>average performance</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''}.`;
+  verdictBg='#fef3c7';verdictColor='#78350f';verdictBorder='#fcd34d';verdictIcon='◇';
+}
+else if(activeRating<3.0||overallPct<30){
+  verdictText=`This mentor <strong>needs immediate attention</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''}.`;
+  verdictBg='#fee2e2';verdictColor='#7f1d1d';verdictBorder='#fca5a5';verdictIcon='▲';
+}
+else{
+  verdictText=`This mentor is <strong>below average</strong>${deptCtx?` in <strong>${deptCtx}</strong>`:''} and needs support.`;
+  verdictBg='#fecaca';verdictColor='#991b1b';verdictBorder='#f87171';verdictIcon='▼';
+}
   const strengthHTML=strengths.length?strengths.map(s=>`<li style="margin-bottom:8px;"><span style="font-weight:600;color:#065f46;">${s.label}</span> <span style="font-size:11px;background:#d1fae5;color:#065f46;border-radius:20px;padding:1px 8px;margin-left:4px;">${s.pct}% yes</span></li>`).join(''):'<li style="color:#6b7280;font-size:12px;">No standout strengths detected above the 65% threshold.</li>';
   const weaknessHTML=weaknesses.length?weaknesses.map(w=>`<li style="margin-bottom:8px;"><span style="font-weight:600;color:#7f1d1d;">${w.label}</span> <span style="font-size:11px;background:#fee2e2;color:#7f1d1d;border-radius:20px;padding:1px 8px;margin-left:4px;">${w.pct}% yes</span></li>`).join(''):'<li style="color:#6b7280;font-size:12px;">No critical weaknesses detected below the 40% threshold.</li>';
   const neutralHTML=neutralAreas.length?neutralAreas.map(n=>`<span class="neutral-pill">${n.label} <strong style="color:var(--ink2);">${n.pct}%</strong></span>`).join(''):'';
@@ -1694,8 +1736,16 @@ function landingGetSorted(){
 
 function landingNpsColor(n){if(n===null)return'var(--ink3)';if(n>=30)return'#065f46';if(n>=0)return'#78350f';return'#7f1d1d';}
 function landingHitColor(h){if(h===null)return'var(--border2)';if(h>=80)return'#10b981';if(h>=50)return'#f59e0b';return'#ef4444';}
-function landingRatingBg(r){if(r===null)return{bg:'var(--bg2)',color:'var(--ink3)',border:'var(--border2)'};if(r>=4.3)return{bg:'#fde9a0',color:'#5c3600',border:'#e6b84a'};if(r>=4.0)return{bg:'#d1fae5',color:'#065f46',border:'#6ee7b7'};if(r>=3.5)return{bg:'#fef3c7',color:'#78350f',border:'#fcd34d'};return{bg:'#fee2e2',color:'#7f1d1d',border:'#fca5a5'};}
-
+function landingRatingBg(r){
+  if(r===null)return{bg:'var(--bg2)',color:'var(--ink3)',border:'var(--border2)'};
+  if(r>=4.5)return{bg:'#5c3600',color:'#fde9a0',border:'#7a4f00'};  // Outstanding
+  if(r>=4.3)return{bg:'#fde9a0',color:'#5c3600',border:'#e6b84a'};  // Excellent
+  if(r>=4.0)return{bg:'#d1fae5',color:'#065f46',border:'#6ee7b7'};  // Very Good
+  if(r>=3.7)return{bg:'#dbeafe',color:'#1e40af',border:'#93c5fd'};  // Good
+  if(r>=3.5)return{bg:'#fef3c7',color:'#78350f',border:'#fcd34d'};  // Average
+  if(r>=3.0)return{bg:'#fecaca',color:'#7f1d1d',border:'#fca5a5'};  // Below Average
+  return{bg:'#fee2e2',color:'#7f1d1d',border:'#fca5a5'};            // Needs Improvement
+}
 function landingFilterRender(){
   const list=landingGetSorted();
   if(!list.length){document.getElementById('landingTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:48px;color:var(--ink3);">No colleges match your search.</td></tr>';return;}
