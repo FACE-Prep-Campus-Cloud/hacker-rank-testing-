@@ -1757,7 +1757,31 @@ function renderTrendCharts(){
   const proms=cycles.map(c=>cycleStats[c].promoterPct);
   const passes=cycles.map(c=>cycleStats[c].passivePct);
   const detrs=cycles.map(c=>cycleStats[c].detractorPct);
-  const baseOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false},tooltip:{backgroundColor:'rgba(42,24,0,0.92)',titleColor:'#fde9a0',bodyColor:'#f5e9c8',borderColor:'#c48a00',borderWidth:1,padding:10}},scales:{x:{ticks:{font:{size:10},color:'#8a6020'},grid:{color:'rgba(120,80,10,0.06)'},border:{display:false}},y:{ticks:{font:{size:10},color:'#8a6020'},grid:{color:'rgba(120,80,10,0.06)'},border:{display:false}}},animation:{duration:800,easing:'easeOutQuart'},elements:{point:{radius:5,hoverRadius:7,borderWidth:2}}};
+  const baseOpts={responsive:true,maintainAspectRatio:false,plugins:{
+  legend:{display:false},
+  datalabels:{
+    display: true, // ✅ Turn on
+    anchor: 'end',
+    align: 'top',
+    color: ctx => ctx.dataset.borderColor, // Match line color
+    font: {
+      weight: 'bold',
+      size: 10
+    },
+    formatter: v => v !== null ? v.toFixed(0) + '%' : ''
+  },
+  tooltip:{
+    backgroundColor:'rgba(42,24,0,0.92)',
+    titleColor:'#fde9a0',
+    bodyColor:'#f5e9c8',
+    borderColor:'#c48a00',
+    borderWidth:1,
+    padding:10,
+    callbacks:{
+      label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y??'—'}%`
+    }
+  }
+},
   if(trendRatingInst){trendRatingInst.destroy();}
   trendRatingInst=new Chart(document.getElementById('trendRatingChart'),{type:'line',data:{labels,datasets:[{label:'Avg Rating',data:ratings,borderColor:'#c48a00',backgroundColor:'rgba(196,138,0,0.10)',borderWidth:2.5,fill:true,tension:0.4,pointBackgroundColor:'#fff',pointBorderColor:'#c48a00'}]},options:{...baseOpts,scales:{...baseOpts.scales,y:{...baseOpts.scales.y,min:0,max:5,ticks:{...baseOpts.scales.y.ticks,stepSize:1,callback:v=>v.toFixed(1)}}},plugins:{...baseOpts.plugins,datalabels:{display:true,anchor:'end',align:'top',color:'#5c3600',font:{weight:'bold',size:10},formatter:v=>v!==null?v.toFixed(1):''}}},plugins:[ChartDataLabels]});
   if(trendNpsInst){trendNpsInst.destroy();}
