@@ -1924,8 +1924,8 @@ function openMentorModal(mentorName,dept){
   const kpiDefs=[
     {label:'Strength score',val:Math.round(strength),sub:'out of 100',interp:si,barColor:mmKpiBarColor(si.level)},
     {label:'Concern score', val:Math.round(concern), sub:'out of 100',interp:ci,barColor:mmKpiBarColor(ci.level)},
-    {label:'TEI',           val:Math.round(tei),     sub:'teaching effectiveness',interp:ti,barColor:mmKpiBarColor(ti.level)},
-    {label:'SSI',           val:Math.round(ssi),     sub:'student satisfaction',interp:ssii,barColor:mmKpiBarColor(ssii.level)},
+    {label:'Teaching Effectiveness Index',           val:Math.round(tei),     sub:'teaching effectiveness',interp:ti,barColor:mmKpiBarColor(ti.level)},
+    {label:'Student Satisfaction Index',           val:Math.round(ssi),     sub:'student satisfaction',interp:ssii,barColor:mmKpiBarColor(ssii.level)},
   ];
   document.getElementById('mmKpiGrid').innerHTML=kpiDefs.map(k=>`
     <div class="mm-kpi-card">
@@ -1938,8 +1938,8 @@ function openMentorModal(mentorName,dept){
 
   document.getElementById('mmFormulaNote').innerHTML=`
     <strong>Strength</strong> = Q1×25 + Q2×10 + Q3×30 + Q4×20 + Q5×15 / 100 &nbsp;·&nbsp;
-    <strong>TEI</strong> = Q1×30 + Q3×35 + Q4×25 + Q5×10 / 100 &nbsp;·&nbsp;
-    <strong>SSI</strong> = avg(Q1–Q5) &nbsp;·&nbsp;
+    <strong>TEI (Teaching Effectiveness Index)</strong> = Q1×30 + Q3×35 + Q4×25 + Q5×10 / 100 &nbsp;·&nbsp;
+    <strong>SSI (Student Satisfaction Index)</strong> = avg(Q1–Q5) &nbsp;·&nbsp;
     <strong>Concern</strong> = weighted No%`;
 
   /* --- Verdict --- */
