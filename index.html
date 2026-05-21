@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FACE Prep Campus — Faculty Feedback</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<title>FACE Prep Campus — Feedback Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg: #f8fafc;
@@ -20,7 +20,6 @@
   --radius: 14px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
@@ -29,1541 +28,843 @@ body {
   line-height: 1.6;
   min-height: 100vh;
 }
-body::before {
-  content: '';
-  position: fixed; inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(59,130,246,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(139,92,246,0.06) 0%, transparent 60%);
-  pointer-events: none; z-index: 0;
+.header {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  color: white;
+  padding: 32px 20px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.2);
 }
-.wrap {
-  position: relative; z-index: 1;
-  max-width: 780px; margin: 0 auto;
-  padding: 60px 20px 100px;
-}
-@media (max-width: 640px) { .wrap { padding: 36px 16px 80px; } }
-
-.header { text-align: center; margin-bottom: 52px; animation: fadeUp .7s ease both; }
-.logo-area { display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
-.logo-img-wrap {
-  display: inline-flex; align-items: center; gap: 12px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 16px; padding: 10px 24px 10px 14px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-}
-.logo-img { height: 80px; width: auto; object-fit: contain; display: block; }
-.logo-text-block { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
-.logo-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 800; color: var(--text); letter-spacing: .01em; }
-.logo-badge-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: .04em; }
-.logo-badge-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); box-shadow: 0 0 8px rgba(16,185,129,0.4); animation: pulse 2s infinite; }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
-
-h1 {
+.header h1 {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(1.6rem, 5vw, 2.8rem);
-  font-weight: 800; line-height: 1.15;
-  background: linear-gradient(135deg, #1e293b 30%, #3b82f6 70%, #8b5cf6);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; margin-bottom: 12px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 8px;
 }
-.subtitle { color: var(--muted); font-size: 14px; max-width: 500px; margin: 0 auto; font-weight: 300; line-height: 1.7; }
-
-.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 8px; animation: fadeUp .7s .1s ease both; }
-.progress-bar-outer { background: var(--surface2); border-radius: 100px; height: 4px; margin-bottom: 44px; overflow: hidden; animation: fadeUp .7s .1s ease both; }
-.progress-bar-inner { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 100px; transition: width .4s ease; width: 0%; }
-
-.section {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 32px; margin-bottom: 20px;
-  opacity: 0; animation: fadeUp .5s ease both;
+.header p {
+  opacity: 0.9;
+  font-size: 14px;
+}
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+.tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+}
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab-btn:hover {
+  color: var(--accent);
+}
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.tab-content {
+  display: none;
+}
+.tab-content.active {
+  display: block;
+}
+.filters {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.filter-group {
+  flex: 1;
+  min-width: 200px;
+}
+.filter-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.filter-group select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-@media (max-width: 640px) { .section { padding: 22px 18px; } }
-@keyframes fadeUp { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
-.section:nth-child(1){animation-delay:.1s;} .section:nth-child(2){animation-delay:.15s;}
-.section:nth-child(3){animation-delay:.2s;} .section:nth-child(4){animation-delay:.25s;}
-.section:nth-child(5){animation-delay:.3s;} .section:nth-child(6){animation-delay:.35s;}
-.section:nth-child(7){animation-delay:.4s;} .section:nth-child(8){animation-delay:.45s;}
-.section:nth-child(9){animation-delay:.5s;} .section:nth-child(10){animation-delay:.55s;}
-.section:nth-child(11){animation-delay:.6s;} .section:nth-child(12){animation-delay:.65s;}
-
-.section-title {
-  font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700;
-  color: var(--text); margin-bottom: 22px;
-  display: flex; align-items: center; gap: 10px;
+.stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
 }
-.section-title .icon {
-  width: 32px; height: 32px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; flex-shrink: 0;
+.stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
 }
-.icon-blue   { background: rgba(59,130,246,.1);  color: var(--accent); }
-.icon-purple { background: rgba(139,92,246,.1);  color: var(--accent2); }
-.icon-green  { background: rgba(16,185,129,.1);  color: var(--success); }
-.icon-orange { background: rgba(249,115,22,.1);  color: #f97316; }
-
-.field { margin-bottom: 18px; }
-.field:last-child { margin-bottom: 0; }
-label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 7px; letter-spacing: .04em; text-transform: uppercase; }
-label .req { color: var(--accent); margin-left: 2px; }
-
-input[type="text"], input[type="email"], select, textarea {
-  width: 100%; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; color: var(--text);
-  font-family: 'DM Sans', sans-serif; font-size: 15px;
-  padding: 11px 15px; outline: none;
-  transition: border-color .2s, box-shadow .2s;
-  appearance: none; -webkit-appearance: none;
+.stat-value.success { color: var(--success); }
+.stat-value.warning { color: #f97316; }
+.stat-value.error { color: var(--error); }
+.stat-value.primary { color: var(--accent); }
+.data-table {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
-textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
-@media (max-width: 640px) { input[type="text"], input[type="email"], select, textarea { font-size: 16px; } }
-input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
-input::placeholder, textarea::placeholder { color: #94a3b8; }
-
-.field.error input, .field.error select, .field.error textarea { border-color: var(--error); box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
-.field.error > label { color: var(--error); }
-.err-msg { display: none; font-size: 11px; color: var(--error); margin-top: 5px; font-weight: 500; }
-.field.error .err-msg { display: block; }
-
-.select-wrapper { position: relative; }
-.select-wrapper::after { content:''; position:absolute; right:14px; top:50%; transform:translateY(-50%); width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--muted); pointer-events:none; }
-.select-wrapper select { padding-right: 38px; cursor: pointer; }
-
-.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-@media (max-width: 540px) { .field-row { grid-template-columns: 1fr; gap: 10px; } }
-
-.faculty-header {
-  display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px;
-  padding-bottom: 18px; border-bottom: 1px solid var(--border);
+.data-table table {
+  width: 100%;
+  border-collapse: collapse;
 }
-.faculty-avatar {
-  width: 44px; height: 44px; border-radius: 12px;
-  background: linear-gradient(135deg, rgba(59,130,246,.15), rgba(139,92,246,.15));
-  border: 1px solid rgba(139,92,246,.2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight: 700; flex-shrink: 0;
-  font-family: 'Syne', sans-serif; color: var(--accent);
+.data-table th {
+  background: var(--surface2);
+  padding: 14px 16px;
+  text-align: left;
+  font-family: 'Syne', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--border);
 }
-.faculty-meta { flex: 1; min-width: 0; }
-.faculty-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
-.faculty-subject { font-size: 12px; color: var(--muted); font-weight: 400; }
-
-.yn-list { display: flex; flex-direction: column; gap: 14px; }
-.yn-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 13px 16px; border-radius: 10px;
-  background: var(--surface2); border: 1px solid var(--border);
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
 }
-.yn-row.error-row { border-color: var(--error); background: rgba(239,68,68,.04); }
-.yn-qnum {
-  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
-  color: var(--accent); background: rgba(59,130,246,.1);
-  border-radius: 6px; padding: 2px 7px; flex-shrink: 0;
+.data-table tr:last-child td {
+  border-bottom: none;
 }
-.yn-text { flex: 1; font-size: 13px; color: var(--text); line-height: 1.4; }
-.yn-btns { display: flex; gap: 6px; flex-shrink: 0; }
-.yn-btns input[type="radio"] { display: none; }
-.yn-btns label {
-  text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 600;
-  padding: 5px 14px; border-radius: 7px; cursor: pointer;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--muted); transition: all .15s; margin: 0;
+.data-table tr:hover {
+  background: var(--surface2);
 }
-.yn-btns input[type="radio"]:checked + label.yes-lbl { background: rgba(16,185,129,.12); border-color: var(--success); color: var(--success); }
-.yn-btns input[type="radio"]:checked + label.no-lbl  { background: rgba(239,68,68,.12); border-color: var(--error); color: var(--error); }
-.yn-btns label:hover { border-color: var(--accent); color: var(--text); }
-
-.rating-block {
-  background: rgba(59,130,246,.04);
-  border: 1px solid rgba(59,130,246,.15);
-  border-radius: 10px; padding: 14px 18px 18px; margin-bottom: 16px;
-  display: flex; flex-direction: column; gap: 14px;
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
 }
-.rating-block-title { font-size: 12px; font-weight: 700; color: var(--text); letter-spacing: .01em; text-transform: uppercase; }
-.scale-btns { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; padding-bottom: 4px; }
-.scale-btns input[type="radio"] { display: none; }
-.scale-circle-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.scale-btns label {
-  width: 44px; height: 44px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
-  border-radius: 50%; border: 2.5px solid transparent;
-  cursor: pointer; transition: all 0.22s cubic-bezier(.34,1.56,.64,1); margin: 0;
-  text-transform: none; letter-spacing: 0; position: relative;
+.badge.success {
+  background: rgba(16,185,129,0.1);
+  color: var(--success);
 }
-.scale-btns label .s-num { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; line-height: 1; color: #fff; transition: font-size 0.2s; }
-.scale-btns label .s-word { font-family: 'DM Sans', sans-serif; font-size: 0px; font-weight: 600; color: #fff; line-height: 1; white-space: nowrap; overflow: hidden; transition: font-size 0.18s ease; }
-.scale-btns label[data-v="1"] { background: #e53935; }
-.scale-btns label[data-v="2"] { background: #f57c00; }
-.scale-btns label[data-v="3"] { background: #fdd835; }
-.scale-btns label[data-v="3"] .s-num  { color: #555; }
-.scale-btns label[data-v="3"] .s-word { color: #555; }
-.scale-btns label[data-v="4"] { background: #43a047; }
-.scale-btns label[data-v="5"] { background: #2e7d32; }
-.s-circle-label { font-size: 10px; font-weight: 500; color: var(--muted); text-align: center; line-height: 1.2; transition: opacity 0.2s, font-weight 0.2s, color 0.2s; white-space: nowrap; }
-.scale-btns:not(.has-selection) label:hover { opacity: 0.78; transform: scale(0.92) translateY(-3px); }
-.scale-btns.has-selection label { width: 30px; height: 30px; opacity: 0.32; }
-.scale-btns.has-selection label .s-num { font-size: 12px; }
-.scale-btns.has-selection .s-circle-label { opacity: 0.28; }
-.scale-btns.has-selection input[type="radio"]:checked + label { width: 70px; height: 70px; opacity: 1; border-color: rgba(255,255,255,0.88); box-shadow: 0 8px 28px rgba(0,0,0,0.22); transform: translateY(-10px); }
-.scale-btns.has-selection input[type="radio"]:checked + label .s-num { font-size: 24px; }
-.scale-btns.has-selection input[type="radio"]:checked + label .s-word { font-size: 10px; }
-.scale-btns.has-selection input[type="radio"]:checked ~ .s-circle-label { opacity: 1 !important; font-weight: 600; color: var(--text); }
-.rating-block.error-rating { border-color: var(--error); background: rgba(239,68,68,.04); }
-@media (max-width: 640px) {
-  .rating-block { padding: 10px 14px 14px; gap: 10px; }
-  .scale-btns { gap: 10px; }
-  .scale-btns label { width: 36px; height: 36px; }
-  .scale-btns label .s-num { font-size: 14px; }
-  .s-circle-label { font-size: 9px; }
-  .scale-btns.has-selection input[type="radio"]:checked + label { width: 58px; height: 58px; }
-  .scale-btns.has-selection input[type="radio"]:checked + label .s-num { font-size: 20px; }
-  .scale-btns.has-selection input[type="radio"]:checked + label .s-word { font-size: 9px; }
+.badge.warning {
+  background: rgba(249,115,22,0.1);
+  color: #f97316;
 }
-
-.nps-block {
-  background: rgba(139,92,246,.04);
-  border: 1px solid rgba(139,92,246,.15);
-  border-radius: 10px; padding: 18px 20px; margin-bottom: 16px;
+.badge.error {
+  background: rgba(239,68,68,0.1);
+  color: var(--error);
 }
-.nps-block-title { font-size: 12px; font-weight: 700; color: var(--text); letter-spacing: .01em; text-transform: uppercase; margin-bottom: 18px; }
-.nps-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-.nps-btns input[type="radio"] { display: none; }
-.nps-btns label {
-  width: 44px; height: 44px; border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
-  cursor: pointer; transition: all .18s; margin: 0; text-transform: none; letter-spacing: 0;
-  border: 2px solid var(--border); background: var(--surface2); color: var(--muted);
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
 }
-.nps-btns input[type="radio"]:checked + label { border-color: var(--accent2); background: var(--accent2); color: #fff; box-shadow: 0 4px 14px rgba(139,92,246,.3); transform: translateY(-3px); }
-.nps-btns label:hover { border-color: var(--accent2); color: var(--accent2); }
-.nps-labels { display: flex; justify-content: space-between; margin-top: 10px; font-size: 11px; color: var(--muted); font-weight: 500; }
-.nps-block.error-nps { border-color: var(--error); background: rgba(239,68,68,.04); }
-
-.check-list { display: flex; flex-direction: column; gap: 10px; }
-.check-item {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px; border-radius: 10px;
-  background: var(--surface2); border: 1px solid var(--border);
-  cursor: pointer; transition: border-color .15s, background .15s;
-}
-.check-item:hover { border-color: var(--accent); background: rgba(59,130,246,.04); }
-.check-item input[type="checkbox"] { display: none; }
-.check-box {
-  width: 20px; height: 20px; border-radius: 6px;
-  border: 2px solid var(--border); background: var(--surface);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; transition: all .15s;
-}
-.check-item.checked .check-box { background: var(--accent); border-color: var(--accent); }
-.check-tick { display: none; color: #fff; font-size: 12px; font-weight: 700; }
-.check-item.checked .check-box .check-tick { display: block; }
-.check-label { font-size: 13px; color: var(--text); font-weight: 500; }
-
-.conditional-field { display: none; margin-top: 12px; }
-.conditional-field.visible { display: block; }
-
-.elective-mentor-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.25);
-  border-radius: 8px; padding: 7px 14px; margin-bottom: 18px;
-  font-size: 13px; font-weight: 500; color: var(--accent2);
-}
-
-.form-section-label {
-  font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
-  letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
-  margin: 32px 0 12px; display: flex; align-items: center; gap: 10px;
-}
-.form-section-label::before, .form-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-.submit-area { text-align: center; margin-top: 36px; animation: fadeUp .5s .6s ease both; opacity: 0; }
-.btn-submit {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
-  color: #fff; font-family: 'Syne', sans-serif; font-size: 16px;
-  font-weight: 700; letter-spacing: .04em; border: none;
-  border-radius: 12px; padding: 15px 44px; cursor: pointer;
-  transition: all .2s; box-shadow: 0 4px 14px rgba(59,130,246,.25);
-}
-@media (max-width: 640px) { .btn-submit { width: 100%; justify-content: center; } }
-.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,130,246,.3); }
-.btn-submit:active { transform: translateY(0); }
-.btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.note { color: var(--muted); font-size: 12px; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-
-#alreadyScreen {
-  display: none; text-align: center; padding: 80px 20px;
-  animation: fadeUp .6s ease both;
-}
-#alreadyScreen .already-icon { font-size: 72px; margin-bottom: 24px; display: block; }
-#alreadyScreen h2 {
-  font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
-  background: linear-gradient(135deg, #f97316, #ef4444);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; margin-bottom: 14px;
-}
-#alreadyScreen p { color: var(--muted); font-size: 15px; max-width: 440px; margin: 0 auto 10px; line-height: 1.7; }
-#alreadyScreen .reg-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(239,68,68,.08); border: 1px solid rgba(239,68,68,.2);
-  border-radius: 10px; padding: 10px 20px; margin: 20px auto 0;
-  font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--error);
-}
-
-#successScreen {
-  display: none; text-align: center; padding: 60px 20px;
-  animation: fadeUp .6s ease both;
-}
-#successScreen .success-icon { font-size: 64px; margin-bottom: 20px; display: block; }
-#successScreen h2 {
-  font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800;
-  background: linear-gradient(135deg, var(--success), #059669);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; margin-bottom: 12px;
-}
-#successScreen p { color: var(--muted); font-size: 15px; max-width: 400px; margin: 0 auto 28px; }
-#successScreen .btn-new {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--surface); border: 1px solid var(--border);
-  color: var(--text); font-family: 'Syne', sans-serif; font-size: 14px;
-  font-weight: 600; border-radius: 10px; padding: 12px 28px;
-  cursor: pointer; transition: all .2s; text-decoration: none;
-}
-#successScreen .btn-new:hover { border-color: var(--accent); color: var(--accent); }
-
-#toast {
-  position: fixed; bottom: 28px; left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 13px 22px; font-size: 14px; color: var(--text);
-  box-shadow: 0 10px 40px rgba(0,0,0,.15); opacity: 0; transition: all .3s;
-  z-index: 9999; display: flex; align-items: center; gap: 10px;
-  white-space: nowrap; max-width: calc(100vw - 32px);
-}
-#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-#toast.success { border-color: rgba(16,185,129,.3); background: rgba(16,185,129,.05); }
-#toast.error   { border-color: rgba(239,68,68,.3);  background: rgba(239,68,68,.05); }
-
-#loadingOverlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(248,250,252,0.85); backdrop-filter: blur(4px);
-  z-index: 9000; align-items: center; justify-content: center;
-  flex-direction: column; gap: 16px;
-}
-#loadingOverlay.show { display: flex; }
 .spinner {
-  width: 44px; height: 44px; border-radius: 50%;
+  display: inline-block;
+  width: 40px;
+  height: 40px;
   border: 3px solid var(--border);
-  border-top-color: var(--accent); animation: spin .8s linear infinite;
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 16px;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-#loadingOverlay p { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; color: var(--muted); }
-
-@keyframes shake { 0%,100%{transform:translateX(0);} 10%,30%,50%,70%,90%{transform:translateX(-4px);} 20%,40%,60%,80%{transform:translateX(4px);} }
-.shake { animation: shake 0.5s; }
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.error-message {
+  background: rgba(239,68,68,0.1);
+  border: 1px solid var(--error);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  color: var(--error);
+  margin: 20px 0;
+}
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+.data-source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+.data-source-badge.sheets {
+  background: rgba(16,185,129,0.1);
+  border-color: rgba(16,185,129,0.2);
+  color: var(--success);
+}
 </style>
 </head>
 <body>
 
-<div id="loadingOverlay">
-  <div class="spinner"></div>
-  <p id="loadingMsg">Checking submission status…</p>
+<div class="header">
+  <h1>📊 Feedback Dashboard</h1>
+  <p>Real-time insights from student feedback</p>
 </div>
 
-<div class="wrap">
+<div class="container">
+  
+  <!-- Data Source Indicator -->
+  <div id="dataSourceBadge"></div>
 
-  <div class="header">
-    <div class="logo-area">
-      <div class="logo-img-wrap">
-        <img src="Face prep logo3.png" alt="FACE Prep Campus Logo" class="logo-img" onerror="this.style.display='none'">
-        <div class="logo-text-block">
-          <div class="logo-title">FACE Prep Campus</div>
-          <div class="logo-badge-pill"><span class="dot"></span>Faculty Feedback</div>
-        </div>
-      </div>
-    </div>
-    <h1>Mentor Feedback Form</h1>
-    <p class="subtitle">Rate each mentor based on your learning experience. Your responses are confidential.</p>
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview')">College Overview</button>
+    <button class="tab-btn" onclick="switchTab('detailed')">Detailed Responses</button>
+    <button class="tab-btn" onclick="switchTab('faculty')">Faculty Ratings</button>
+    <button class="tab-btn" onclick="switchTab('nps')">NPS Analysis</button>
   </div>
 
-  <div class="progress-label"><span>Progress</span><span id="pct">0%</span></div>
-  <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
+  <!-- Overview Tab -->
+  <div id="overview" class="tab-content active">
+    <div class="filters">
+      <div class="filter-group">
+        <label>College</label>
+        <select id="overviewCollegeFilter" onchange="filterOverview()">
+          <option value="">All Colleges</option>
+        </select>
+      </div>
+    </div>
 
-  <div id="alreadyScreen">
-    <span class="already-icon">🚫</span>
-    <h2>Already Submitted!</h2>
-    <p>Our records show that you have already submitted the feedback form.</p>
-    <p>Each student is allowed only <strong>one submission</strong>. If you believe this is a mistake, please contact your respective Campus Manager.</p>
-    <div class="reg-badge"> Register Number: <span id="alreadyRegNo">—</span></div>
+    <div class="stats-grid" id="overviewStats">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading dashboard data...</p>
+      </div>
+    </div>
+
+    <div class="data-table" id="overviewTable" style="display:none;">
+      <table>
+        <thead>
+          <tr>
+            <th>College</th>
+            <th>Total Responses</th>
+            <th>Avg NPS</th>
+            <th>NPS Index</th>
+            <th>Avg Rating</th>
+            <th>Promoters</th>
+            <th>Passives</th>
+            <th>Detractors</th>
+          </tr>
+        </thead>
+        <tbody id="overviewTableBody"></tbody>
+      </table>
+    </div>
   </div>
 
-  <div id="successScreen">
-    <span class="success-icon">🎉</span>
-    <h2 id="successTitle">Thank you!</h2>
-    <p>Your feedback has been recorded successfully. We appreciate your time.</p>
-    <a href="javascript:void(0)" class="btn-new" onclick="resetForm()">Submit Another Response</a>
+  <!-- Detailed Responses Tab -->
+  <div id="detailed" class="tab-content">
+    <div class="filters">
+      <div class="filter-group">
+        <label>College</label>
+        <select id="detailedCollegeFilter" onchange="filterDetailed()">
+          <option value="">All Colleges</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Department</label>
+        <select id="detailedDeptFilter" onchange="filterDetailed()">
+          <option value="">All Departments</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="data-table" id="detailedTable">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading responses...</p>
+      </div>
+    </div>
   </div>
 
-  <form id="feedbackForm" novalidate>
-
-    <input type="hidden" name="payload" id="payloadField">
-
-    <div class="form-section-label">Personal Information</div>
-    <div class="section">
-      <div class="section-title"><div class="icon icon-blue">👤</div>Personal Information</div>
-      <div class="field-row">
-        <div class="field">
-          <label for="studentName">Student Name <span class="req">*</span></label>
-          <input type="text" id="studentName" name="studentName" placeholder="Your full name" required>
-          <div class="err-msg">Please enter your name</div>
-        </div>
-        <div class="field">
-          <label for="regNumber">Register Number <span class="req">*</span></label>
-          <input type="text" id="regNumber" name="regNumber" placeholder="e.g. 22CS001" required>
-          <div class="err-msg">Please enter your register number</div>
-        </div>
+  <!-- Faculty Ratings Tab -->
+  <div id="faculty" class="tab-content">
+    <div class="filters">
+      <div class="filter-group">
+        <label>College</label>
+        <select id="facultyCollegeFilter" onchange="filterFaculty()">
+          <option value="">All Colleges</option>
+        </select>
       </div>
-      <div class="field">
-        <label for="studentEmail">Email ID <span class="req">*</span></label>
-        <input type="email" id="studentEmail" name="studentEmail" placeholder="yourname@college.edu" required>
-        <div class="err-msg">Please enter a valid email address</div>
-      </div>
-      <div class="field">
-        <label for="collegeName">College <span class="req">*</span></label>
-        <div class="select-wrapper">
-          <select id="collegeName" name="collegeName" required>
-            <option value="" disabled selected>Select your college</option>
-            <option>Kamaraj College</option>
-            <option>Rathinam College of Arts &amp; Science</option>
-            <option>Kamaraj Women's College</option>
-            <option>Sree Saraswathi Thyagaraja College</option>
-            <option>Nagarathinam Angalammal Arts &amp; Science College</option>
-            <option>Sri Amaraavathi College of Arts &amp; Science</option>
-            <option>Bharathidasan College of Arts &amp; Science</option>
-            <option>SDNB Vaishnav College for Women</option>
-            <option>TERF's College of Arts and Science</option>
-            <option>TJS College of Arts and Science</option>
-            <option>Vinayaga Mission's Research Foundation School of Arts &amp; Science</option>
-            <option>Patrician College of Arts &amp; Science</option>
-            <option>Takshashila University</option>
-            <option>AMET University</option>
-            <option>Joy University</option>
-            <option>Noorul Islam Centre for Higher Education (NICHE)</option>
-            <option>Study World Group of Institution</option>
-            <option>Sasurie College of Arts and Science</option>
-            <option>S-VYASA University</option>
-            <option>Asian School of Business</option>
-            <option>Alliance University</option>
-            <option>Kristu Jayanti (Deemed to be University)</option>
-          </select>
-        </div>
-        <div class="err-msg">Please select your college</div>
-      </div>
-      <div class="field">
-        <label for="department">Department <span class="req">*</span></label>
-        <div class="select-wrapper">
-          <select id="department" name="department" required disabled>
-            <option value="" disabled selected>First select your college</option>
-          </select>
-        </div>
-        <div class="err-msg">Please select your department</div>
+      <div class="filter-group">
+        <label>Mentor</label>
+        <select id="facultyMentorFilter" onchange="filterFaculty()">
+          <option value="">All Mentors</option>
+        </select>
       </div>
     </div>
 
-    <div id="dynamicContent" style="display:none;">
-
-      <div class="form-section-label">Academic &amp; Program Effectiveness</div>
-      <div class="section">
-        <div class="section-title">Academic &amp; Program Effectiveness</div>
-        <div class="yn-list" style="margin-bottom:18px;">
-          <div class="yn-row" id="ape_q1_row">
-            <span class="yn-qnum">Q1</span>
-            <span class="yn-text">Did you have regular assessments and assignments as part of your academic curriculum?</span>
-            <div class="yn-btns">
-              <input type="radio" id="ape_q1_y" name="ape_q1" value="Yes" required>
-              <label for="ape_q1_y" class="yes-lbl">Yes</label>
-              <input type="radio" id="ape_q1_n" name="ape_q1" value="No">
-              <label for="ape_q1_n" class="no-lbl">No</label>
-            </div>
-          </div>
-          <div class="yn-row" id="ape_q2_row">
-            <span class="yn-qnum">Q2</span>
-            <span class="yn-text">Did you receive study materials for all the course papers?</span>
-            <div class="yn-btns">
-              <input type="radio" id="ape_q2_y" name="ape_q2" value="Yes" required>
-              <label for="ape_q2_y" class="yes-lbl">Yes</label>
-              <input type="radio" id="ape_q2_n" name="ape_q2" value="No">
-              <label for="ape_q2_n" class="no-lbl">No</label>
-            </div>
-          </div>
-        </div>
-        <div class="conditional-field" id="ape_q2_detail_wrap">
-          <div class="field">
-            <label for="ape_q2_detail">Please mention the course papers you didn't receive study materials for <span class="req">*</span></label>
-            <textarea id="ape_q2_detail" name="ape_q2_detail" placeholder="List the course papers here…" rows="3"></textarea>
-            <div class="err-msg">Please mention the course papers</div>
-          </div>
-        </div>
-        <div class="rating-block" id="ape_q3_block">
-          <div class="rating-block-title">Q3 — How effective and industry-relevant are the program's hands-on learning and curriculum?</div>
-          <div class="scale-btns" id="apeScaleBtns3">
-            <div class="scale-circle-wrap"><input type="radio" id="ape3v1" name="ape_q3_rating" value="1" required><label for="ape3v1" data-v="1"><span class="s-num">1</span><span class="s-word">Poor</span></label><div class="s-circle-label">Poor</div></div>
-            <div class="scale-circle-wrap"><input type="radio" id="ape3v2" name="ape_q3_rating" value="2"><label for="ape3v2" data-v="2"><span class="s-num">2</span><span class="s-word">Below Avg</span></label><div class="s-circle-label">Below Avg</div></div>
-            <div class="scale-circle-wrap"><input type="radio" id="ape3v3" name="ape_q3_rating" value="3"><label for="ape3v3" data-v="3"><span class="s-num">3</span><span class="s-word">Average</span></label><div class="s-circle-label">Average</div></div>
-            <div class="scale-circle-wrap"><input type="radio" id="ape3v4" name="ape_q3_rating" value="4"><label for="ape3v4" data-v="4"><span class="s-num">4</span><span class="s-word">Good</span></label><div class="s-circle-label">Good</div></div>
-            <div class="scale-circle-wrap"><input type="radio" id="ape3v5" name="ape_q3_rating" value="5"><label for="ape3v5" data-v="5"><span class="s-num">5</span><span class="s-word">Excellent</span></label><div class="s-circle-label">Excellent</div></div>
-          </div>
-          <div class="err-msg" style="margin-top:4px;">Please select a rating</div>
-        </div>
-        <div class="rating-block" id="ape_q4_block">
-          <div class="rating-block-title">Q4 — How effectively has the program improved your confidence and prepared you for industry expectations and future job roles?</div>
-          <div class="scale-btns" id="apeScaleBtns4">
-            <div class="scale-circle-wrap"><input type="radio" id="ape4v1" name="ape_q4_rating" value="1" required><label for="ape4v1" data-v="1"><span class="s-num">1</span><span class="s-word">Poor</span></label><div class="s-circle-label">Poor</div></div>
-            <div class="scale-circle-wrap"><input type="radio" id="ape4v2" name="ape_q4_rating" value="2"><label for="ape4v2" data-v="2"><span class="s-num">2</span><span class="s-word">Below Avg</span></label><div class="s-circle-label">Below Avg</div></div>
-            <div class="scale-circle-wrap"><input type="radio" id="ape4v3" name="ape_q4_rating" value="3"><label for="ape4v3" data-v="3"><span class="s-num">3</span><span class="s-word">Average</span></label><div class="s-circle-label">Average</div></div>
-            <div class="scale-circle-wrap"><input type="radio" id="ape4v4" name="ape_q4_rating" value="4"><label for="ape4v4" data-v="4"><span class="s-num">4</span><span class="s-word">Good</span></label><div class="s-circle-label">Good</div></div>
-            <div class="scale-circle-wrap"><input type="radio" id="ape4v5" name="ape_q4_rating" value="5"><label for="ape4v5" data-v="5"><span class="s-num">5</span><span class="s-word">Excellent</span></label><div class="s-circle-label">Excellent</div></div>
-          </div>
-          <div class="err-msg" style="margin-top:4px;">Please select a rating</div>
-        </div>
+    <div class="data-table" id="facultyTable">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading faculty ratings...</p>
       </div>
+    </div>
+  </div>
 
-      <div class="form-section-label">Mentor Performance Rating</div>
-      <div id="facultySections"></div>
-
-      <div class="form-section-label">Challenges Faced</div>
-      <div class="section">
-        <div class="section-title"><div class="icon icon-orange">⚠️</div>Challenges Faced by Students</div>
-        <div class="field" style="margin-bottom:20px;">
-          <label>Q1. What challenges are you currently facing? <span class="req">*</span> <span style="text-transform:none;letter-spacing:0;font-weight:400;font-size:11px;">(Select all that apply)</span></label>
-          <div class="check-list" id="challengeList">
-            <label class="check-item" onclick="toggleCheck(this,'challenge_infra')"><input type="checkbox" id="challenge_infra" value="Infrastructure & Facilities"><span class="check-box"><span class="check-tick">✓</span></span><span class="check-label">Infrastructure &amp; Facilities</span></label>
-            <label class="check-item" onclick="toggleCheck(this,'challenge_teaching')"><input type="checkbox" id="challenge_teaching" value="Teaching Quality & Delivery"><span class="check-box"><span class="check-tick">✓</span></span><span class="check-label">Teaching Quality &amp; Delivery</span></label>
-            <label class="check-item" onclick="toggleCheck(this,'challenge_comm')"><input type="checkbox" id="challenge_comm" value="Communication & Language Issues"><span class="check-box"><span class="check-tick">✓</span></span><span class="check-label">Communication &amp; Language Issues</span></label>
-            <label class="check-item" onclick="toggleCheck(this,'challenge_curriculum')"><input type="checkbox" id="challenge_curriculum" value="Curriculum & Academic Concerns"><span class="check-box"><span class="check-tick">✓</span></span><span class="check-label">Curriculum &amp; Academic Concerns</span></label>
-            <label class="check-item" onclick="toggleCheck(this,'challenge_materials')"><input type="checkbox" id="challenge_materials" value="Study Materials & Resources"><span class="check-box"><span class="check-tick">✓</span></span><span class="check-label">Study Materials &amp; Resources</span></label>
-            <label class="check-item" onclick="toggleCheck(this,'challenge_none','exclusive')"><input type="checkbox" id="challenge_none" value="No Challenges"><span class="check-box"><span class="check-tick">✓</span></span><span class="check-label">No Challenges</span></label>
-            <label class="check-item" onclick="toggleCheck(this,'challenge_others')"><input type="checkbox" id="challenge_others" value="Others"><span class="check-box"><span class="check-tick">✓</span></span><span class="check-label">Others</span></label>
-          </div>
-          <div class="err-msg" id="challengeErr" style="display:none;margin-top:6px;">Please select at least one option</div>
-        </div>
-        <div class="field">
-          <label for="challengeDetail">Q2. Please describe the challenges you are facing in detail <span class="req">*</span></label>
-          <textarea id="challengeDetail" name="challengeDetail" placeholder="Describe your challenges…" required></textarea>
-          <div class="err-msg">Please describe your challenges</div>
-        </div>
-        <div class="field" style="margin-bottom:0;">
-          <label for="challengeSuggestions">Q3. Please share your suggestions where we can improve <span class="req">*</span></label>
-          <textarea id="challengeSuggestions" name="challengeSuggestions" placeholder="Your suggestions…" required></textarea>
-          <div class="err-msg">Please share your suggestions</div>
-        </div>
+  <!-- NPS Analysis Tab -->
+  <div id="nps" class="tab-content">
+    <div class="filters">
+      <div class="filter-group">
+        <label>College</label>
+        <select id="npsCollegeFilter" onchange="filterNPS()">
+          <option value="">All Colleges</option>
+        </select>
       </div>
-
-      <div class="form-section-label">Net Promoter Score</div>
-      <div class="section">
-        <div class="section-title"><div class="icon icon-purple">⭐</div>Net Promoter Score (NPS)</div>
-        <div class="nps-block" id="npsBlock">
-          <div class="nps-block-title">Q1 — Based on the overall FACE Prep program experience, how likely are you to recommend FACE Prep to your friends or juniors?</div>
-          <div class="nps-btns" id="npsBtns">
-            <input type="radio" id="nps1"  name="nps_score" value="1"  required><label for="nps1">1</label>
-            <input type="radio" id="nps2"  name="nps_score" value="2"><label for="nps2">2</label>
-            <input type="radio" id="nps3"  name="nps_score" value="3"><label for="nps3">3</label>
-            <input type="radio" id="nps4"  name="nps_score" value="4"><label for="nps4">4</label>
-            <input type="radio" id="nps5"  name="nps_score" value="5"><label for="nps5">5</label>
-            <input type="radio" id="nps6"  name="nps_score" value="6"><label for="nps6">6</label>
-            <input type="radio" id="nps7"  name="nps_score" value="7"><label for="nps7">7</label>
-            <input type="radio" id="nps8"  name="nps_score" value="8"><label for="nps8">8</label>
-            <input type="radio" id="nps9"  name="nps_score" value="9"><label for="nps9">9</label>
-            <input type="radio" id="nps10" name="nps_score" value="10"><label for="nps10">10</label>
-          </div>
-          <div class="nps-labels"><span>Not likely</span><span>Extremely likely</span></div>
-          <div class="err-msg" style="margin-top:8px;">Please select a score</div>
-        </div>
-        <div class="yn-list" style="margin-bottom:20px;">
-          <div class="yn-row" id="nps_fu1_row"><span class="yn-qnum">Q2</span><span class="yn-text">Are you satisfied with the overall campus experience (Classroom, Campus Infrastructure, Network / Wi-Fi)?</span><div class="yn-btns"><input type="radio" id="nps_fu1_y" name="nps_fu1" value="Yes" required><label for="nps_fu1_y" class="yes-lbl">Yes</label><input type="radio" id="nps_fu1_n" name="nps_fu1" value="No"><label for="nps_fu1_n" class="no-lbl">No</label></div></div>
-          <div class="yn-row" id="nps_fu2_row"><span class="yn-qnum">Q3</span><span class="yn-text">Are you satisfied with the classroom engagement and experience (Quality of Faculty, Relevance of content delivered)?</span><div class="yn-btns"><input type="radio" id="nps_fu2_y" name="nps_fu2" value="Yes" required><label for="nps_fu2_y" class="yes-lbl">Yes</label><input type="radio" id="nps_fu2_n" name="nps_fu2" value="No"><label for="nps_fu2_n" class="no-lbl">No</label></div></div>
-          <div class="yn-row" id="nps_fu3_row"><span class="yn-qnum">Q4</span><span class="yn-text">Are you happy with the Skill Development progress?</span><div class="yn-btns"><input type="radio" id="nps_fu3_y" name="nps_fu3" value="Yes" required><label for="nps_fu3_y" class="yes-lbl">Yes</label><input type="radio" id="nps_fu3_n" name="nps_fu3" value="No"><label for="nps_fu3_n" class="no-lbl">No</label></div></div>
-          <div class="yn-row" id="nps_fu4_row"><span class="yn-qnum">Q5</span><span class="yn-text">Are you happy with Placement opportunities?</span><div class="yn-btns"><input type="radio" id="nps_fu4_y" name="nps_fu4" value="Yes" required><label for="nps_fu4_y" class="yes-lbl">Yes</label><input type="radio" id="nps_fu4_n" name="nps_fu4" value="No"><label for="nps_fu4_n" class="no-lbl">No</label></div></div>
-        </div>
-        <div class="field">
-          <label for="npsLike">Q6. In summary, what do you like about the FACE Prep program? <span class="req">*</span></label>
-          <textarea id="npsLike" name="npsLike" placeholder="Share what you love about the program…" required></textarea>
-          <div class="err-msg">Please share what you like about the program</div>
-        </div>
-        <div class="field" style="margin-bottom:0;">
-          <label for="npsImprove">Q7. What is one thing you would like FACE Prep to improve in next year? <span class="req">*</span></label>
-          <textarea id="npsImprove" name="npsImprove" placeholder="Your improvement suggestion…" required></textarea>
-          <div class="err-msg">Please share your improvement suggestion</div>
-        </div>
-      </div>
-
     </div>
 
-    <div class="submit-area">
-      <button type="submit" class="btn-submit" id="submitBtn">
-        <span>Submit Feedback</span><span>→</span>
-      </button>
-      <p class="note">🔒 Your response is confidential and handled only by the Operations team of FACE Prep Campus.</p>
+    <div class="stats-grid" id="npsStats">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading NPS data...</p>
+      </div>
     </div>
 
-  </form>
+    <div class="data-table" id="npsTable" style="display:none;"></div>
+  </div>
+
 </div>
-
-<div id="toast"></div>
 
 <script>
-// ─── SUPABASE CONFIG ─────────────────────────────────────────────────────────
-const SUPABASE_URL      = "https://bdgfotzgqwlrqylodydt.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJkZ2ZvdHpncXdscnF5bG9keWR0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyNjkzNTUsImV4cCI6MjA5NDg0NTM1NX0.xAJnpKDQIfQinWgJ8oEPaD3ELGLY_IiwWrYAFNcCUEo";
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIGURATION — UPDATE THESE WITH YOUR VALUES
+// ═══════════════════════════════════════════════════════════════════════════
 
-// ─── SUPABASE HELPERS ─────────────────────────────────────────────────────────
-async function checkRegNumber(regNo) {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/submissions?reg_number=eq.${encodeURIComponent(regNo)}&select=reg_number`,
-    { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } }
-  );
-  if (!res.ok) throw new Error('Supabase check failed');
-  const data = await res.json();
-  return data.length > 0;
-}
+const SUPABASE_URL = "https://YOUR-PROJECT-ID.supabase.co";  // ← REPLACE THIS
+const SUPABASE_ANON_KEY = "YOUR-ANON-KEY-HERE";  // ← REPLACE THIS
 
-async function saveRegNumber(regNo) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/submissions`, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
-    },
-    body: JSON.stringify({ reg_number: regNo })
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    if (err.code === '23505') return 'duplicate';
-    throw new Error('Supabase insert failed');
-  }
-  return 'saved';
-}
+const GOOGLE_SHEETS_URL = "https://script.google.com/macros/s/YOUR-SHEETS-SCRIPT-ID/exec";  // ← Optional fallback
 
-// ─── NEW: Save full feedback response to Supabase ─────────────────────────────
-async function saveFullResponse(data) {
-  // Build payload mapping camelCase form keys → snake_case Supabase columns
-  const payload = {
-    timestamp:                   data.timestamp,
-    student_name:                data.studentName,
-    register_number:             data.registerNumber,
-    student_email:               data.studentEmail,
-    college_name:                data.collegeName,
-    department:                  data.department,
+// ═══════════════════════════════════════════════════════════════════════════
+// DATA LOADING
+// ═══════════════════════════════════════════════════════════════════════════
 
-    ape_q1_assessments:          data.ape_q1_assessments          || null,
-    ape_q2_study_materials:      data.ape_q2_studyMaterials        || null,
-    ape_q2_missing_papers:       data.ape_q2_missingPapers         || null,
-    ape_q3_hands_on_rating:      data.ape_q3_handsOnRating         ? parseInt(data.ape_q3_handsOnRating)   : null,
-    ape_q4_confidence_rating:    data.ape_q4_confidenceRating      ? parseInt(data.ape_q4_confidenceRating) : null,
+let allData = [];
+let dataSource = 'none';
 
-    challenges_selected:         data.challenges_selected          || null,
-    challenges_detail:           data.challenges_detail            || null,
-    challenges_suggestions:      data.challenges_suggestions       || null,
-
-    nps_score:                   data.nps_score                    ? parseInt(data.nps_score)   : null,
-    nps_fu1_campus_satisfied:    data.nps_fu1_campusSatisfied      || null,
-    nps_fu2_classroom_satisfied: data.nps_fu2_classroomSatisfied   || null,
-    nps_fu3_skill_dev:           data.nps_fu3_skillDev             || null,
-    nps_fu4_placement:           data.nps_fu4_placement            || null,
-    nps_likes:                   data.nps_likes                    || null,
-    nps_improve:                 data.nps_improve                  || null,
-  };
-
-  // Subject 1–7 dynamic fields
-  for (let i = 1; i <= 7; i++) {
-    payload[`subject${i}_name`]   = data[`subject${i}_Name`]   || null;
-    payload[`subject${i}_mentor`] = data[`subject${i}_Mentor`] || null;
-    const raw = data[`subject${i}_Rating`];
-    payload[`subject${i}_rating`] = raw ? parseFloat(raw) : null;
-    for (let q = 1; q <= 5; q++) {
-      payload[`subject${i}_q${q}`] = data[`subject${i}_Q${q}`] || null;
-    }
-  }
-
-  // Strip out null/empty keys so Postgres uses column defaults cleanly
-  Object.keys(payload).forEach(k => {
-    if (payload[k] === null || payload[k] === '' || payload[k] === undefined) delete payload[k];
-  });
-
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/feedback_responses`, {
-    method: 'POST',
-    headers: {
-      'apikey':        SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type':  'application/json',
-      'Prefer':        'return=minimal'
-    },
-    body: JSON.stringify(payload)
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    // Don't throw — log only, so form success is not blocked by a Supabase write issue
-    console.warn('saveFullResponse warning:', err.message || res.status);
-    return 'warn';
-  }
-  return 'saved';
-}
-
-// ─── GOOGLE SHEET CONFIG ─────────────────────────────────────────────────────
-const SHEET_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygpjHGGVcUTJqa9n0g5_SzYgjl9_TMSnp4oTx5gpYu6G93cSsNGNn_s7LJhuyuSE4I/exec";
-
-const QUESTIONS = [
-  "Were the sessions delivered by the Faculty clear and well-structured?",
-  "Are you convinced with the professional behavior of the Faculty during sessions?",
-  "Was the trainer effective in solving problems and explaining solutions with examples?",
-  "Did the trainer support doubt clearing and student queries?",
-  "Were the sessions useful in improving your understanding and skills?"
-];
-
-const SCALE_WORDS = {1:'Poor', 2:'Below Avg', 3:'Average', 4:'Good', 5:'Excellent'};
-const CHALLENGE_IDS = ['challenge_infra','challenge_teaching','challenge_comm','challenge_curriculum','challenge_materials','challenge_none','challenge_others'];
-
-// ─── COLLEGE DATA ─────────────────────────────────────────────────────────────
-const COLLEGE_DATA = {
-  "Kamaraj College": {
-    "I BCA - A": [
-      {subject:"Tamil - II",mentor:"Gowrishankar"},{subject:"English - II",mentor:"Vedha"},{subject:"Effective Communication",mentor:"Vedha"},
-      {subject:"Object Oriented Programming Java",mentor:"Arun Raj"},{subject:"Aptitude",mentor:"Infanta Jasmine Rushmitha"},
-      {subject:"Python for Data Science Analytics",mentor:"Saral"},{subject:"Front End Web Development",mentor:"Aparna"}
-    ],
-    "I BCA - B": [
-      {subject:"Tamil - II",mentor:"Gowrishankar"},{subject:"English - II",mentor:"Vedha"},{subject:"Effective Communication",mentor:"Vedha"},
-      {subject:"Object Oriented Programming Java",mentor:"Arun Raj"},{subject:"Aptitude",mentor:"Infanta Jasmine Rushmitha"},
-      {subject:"Python for Data Science Analytics",mentor:"Saral"},{subject:"Front End Web Development",mentor:"Aparna"}
-    ],
-    "II BCA": [
-      {subject:"Tamil - II",mentor:"Gowrishankar"},{subject:"English - II",mentor:"Venkatesh"},{subject:"Effective Communication",mentor:"Vedha"},
-      {subject:"Java Programming",mentor:"Arun Raj"},{subject:"Full Stack Development (React JS) Skill",mentor:"Aparna"},
-      {subject:"Cloud Computing",mentor:"Saral"},{subject:"Advanced Excel",mentor:"Arun Raj"},{subject:"Multimedia System",mentor:"Saral"},
-      {subject:"EVS",mentor:"Infanta Jasmine Rushmitha"},{subject:"Aptitude",mentor:"Infanta Jasmine Rushmitha"}
-    ],
-    "B.Com Honors": [
-      {subject:"Tamil - II",mentor:"Gowrishankar"},{subject:"English - II",mentor:"Venkatesh"},{subject:"Effective Communication",mentor:"Venkatesh"},
-      {subject:"Financial Accounting - II",mentor:"Bavani Sri"},{subject:"Business Law",mentor:"Jane Rhinu"},
-      {subject:"Business Mathematics and Statistics",mentor:"Bavani Sri"},{subject:"Problem Solving through Aptitude - II",mentor:"Infanta Jasmine Rushmitha"},
-      {subject:"Financial Analysis using Excel",mentor:"Bavani Sri"}
-    ],
-    "BBA Digital Marketing": [
-      {subject:"Tamil - II",mentor:"Gowrishankar"},{subject:"English - II",mentor:"Venkatesh"},{subject:"Effective Communication",mentor:"Venkatesh"},
-      {subject:"Organizational Behaviour",mentor:"Jane Rhinu"},{subject:"Cost & Management Accounting",mentor:"Bavani Sri"},
-      {subject:"Introduction to Digital Marketing",mentor:"Jane Rhinu"},{subject:"Social Media Marketing",mentor:"Jane Rhinu"},
-      {subject:"Monetary Marketing",mentor:"Jane Rhinu"},{subject:"Aptitude",mentor:"Infanta Jasmine Rushmitha"}
-    ]
-  },
-  "Kamaraj Women's College": {
-    "I BCA - A": [
-      {subject:"Tamil",mentor:"Gowrishankar"},{subject:"English",mentor:"Venkatesh"},{subject:"Effective Communication",mentor:"Venkatesh"},
-      {subject:"Programming in C++",mentor:"Sowmiya"},{subject:"Data Structures",mentor:"Sowmiya"},
-      {subject:"Artificial Intelligence & Knowledge Representation",mentor:"Saral"},{subject:"Aptitude",mentor:"Infanta Jasmine Rushmitha"}
-    ]
-  },
-  "SDNB Vaishnav College for Women": {
-    "II B.Sc. CS with AI": [
-      {subject:"Language - IV",mentor:"Mekala"},{subject:"General English - IV",mentor:"Bowya"},{subject:"Machine Learning",mentor:"Geetha"},
-      {subject:"Computer Vision",mentor:"Geetha"},{subject:"Machine Learning and Computer Vision Lab",mentor:"Geetha"},
-      {subject:"Internet of Things in AI",mentor:"Dharani"},{subject:"Applied Statistics",mentor:"Aabitha"},
-      {subject:"Advanced Web Development (Full stack skill paper)",mentor:"Geetha"},{subject:"Essentials of Effective Communication Skill",mentor:"Bavyashree"},
-      {subject:"Aptitude",mentor:"Aabitha"}
-    ],
-    "I B.Sc. CS with AI (Shift 1)": [
-      {subject:"Language - II",mentor:"Mekala"},{subject:"General English - II",mentor:"Bowya"},{subject:"Java Programming",mentor:"Keerthi"},
-      {subject:"Operating Systems",mentor:"Keerthi"},{subject:"Data Structures and Algorithms",mentor:"Keerthi"},
-      {subject:"Data Structures and Algorithms using Java Lab",mentor:"Keerthi"},{subject:"Numerical Methods",mentor:"Saradha"},
-      {subject:"Effective Communication",mentor:"Bowya"}
-    ],
-    "I B.Sc. CS with AI (Shift 2)": [
-      {subject:"Language - II",mentor:"Mekala"},{subject:"General English - II",mentor:"Bowya"},{subject:"Java Programming",mentor:"Subhashni"},
-      {subject:"Operating Systems",mentor:"Subhashni"},{subject:"Data Structures and Algorithms",mentor:"Subhashni"},
-      {subject:"Data Structures and Algorithms using Java Lab",mentor:"Subhashni"},{subject:"Numerical Methods",mentor:"Aabitha"},
-      {subject:"Effective Communication",mentor:"Bowya"}
-    ],
-    "I B.Sc. DS & AI": [
-      {subject:"Language - II",mentor:"Mekala"},{subject:"General English - II",mentor:"Bavyashree"},{subject:"Programming in Java",mentor:"Dharani"},
-      {subject:"Programming in Java Lab",mentor:"Dharani"},{subject:"Mathematics-II",mentor:"Saradha"},
-      {subject:"Analytical Reasoning and Problem Solving - II",mentor:"Saradha"},{subject:"Effective Communication",mentor:"Bavyashree"}
-    ],
-    "I B.Com FinTech with AI": [
-      {subject:"Language - II",mentor:"Mekala"},{subject:"General English - II",mentor:"Bavyashree"},
-      {subject:"Securities Markets Regulations and Practices",mentor:"Astha"},{subject:"Business Law",mentor:"Astha"},
-      {subject:"Financial Data Analysis",mentor:"Malarvizhi"},{subject:"Effective Communication",mentor:"Bowya"},
-      {subject:"Analytical Reasoning and Problem Solving - II",mentor:"Saradha"}
-    ],
-    "I BBA DM & BA": [
-      {subject:"Language - II",mentor:"Mekala"},{subject:"General English - II",mentor:"Bavyashree"},
-      {subject:"Social Media Marketing I",mentor:"Priyanka"},{subject:"Managerial Economics",mentor:"Priyanka"},
-      {subject:"E-commerce Strategies",mentor:"Nayeemunnisa"},{subject:"Cloud Based tools for E-commerce",mentor:"Nayeemunnisa"},
-      {subject:"Effective Communication",mentor:"Bavyashree"},{subject:"Problem Solving through Aptitude II",mentor:"Aabitha"}
-    ]
-  },
-  "Patrician College of Arts & Science": {
-    "B.Sc. CS with AI": [
-      {subject:"Introduction to Computer Architecture and Microprocessor Lab",mentor:"Mrs. Keerthika S"},
-      {subject:"Problem Solving Techniques",mentor:"Mrs. Keerthika S"},
-      {subject:"Introduction to Computer Architecture and Microprocessor",mentor:"Mr. Rave Sankar"},
-      {subject:"Quantitative Aptitude",mentor:"Mrs. Keerthika S"}
-    ]
-  },
-  "Sree Saraswathi Thyagaraja College": {
-    "I BBA": [
-      {subject:"Managerial Economics",mentor:"Gayathri"},{subject:"Social Media Marketing",mentor:"Kavipriya"},
-      {subject:"E-commerce and Consumer Behaviour",mentor:"Kavipriya"},{subject:"Business Statistics",mentor:"Indumathi"},
-      {subject:"Effective Communication",mentor:"Bavadharini"},{subject:"Problem Solving through Aptitude",mentor:"Bavadharini"},
-      {subject:"English",mentor:"Bavadharini"}
-    ],
-    "I MCA": [
-      {subject:"Data Structure",mentor:"Sneha"},{subject:"Machine Learning",mentor:"Sneha"},{subject:"Applied Statistics",mentor:"Indumathi"},
-      {subject:"Problem Solving through Aptitude",mentor:"Bavadharini"},{subject:"Java",mentor:"Gokilavaani"},
-      {subject:"DBMS",mentor:"Gokilavaani"},{subject:"Effective Communication",mentor:"Bavadharini"}
-    ]
-  },
-  "TERF's College of Arts and Science": {
-    "III BCA": [
-      {subject:"Effective Communication",mentor:"Kapila"},{subject:"Full Stack Development",mentor:"Vaishnavi"},
-      {subject:"Computer Networks",mentor:"Vaishnavi"},{subject:"Graphics and Multimedia",mentor:"Vaishnavi"},
-      {subject:"Internet of Things",mentor:"Ajeetha"}
-    ],
-    "II B.Sc IT": [
-      {subject:"Tamil",mentor:"Kalaiarasi"},{subject:"English",mentor:"Kapila"},{subject:"Effective Communication",mentor:"Kapila"},
-      {subject:"Full Stack Development",mentor:"Ajeetha"},{subject:"Linux and Shell Programming",mentor:"Vaishnavi"},
-      {subject:"System Software and Operating Systems",mentor:"Ajeetha"},{subject:"Business Accounting",mentor:"Kapila"},
-      {subject:"General Awareness",mentor:"Kapila"}
-    ]
-  },
-  "TJS College of Arts and Science": {
-    "II B.Sc CS with AI": [
-      {subject:"DSA (Technical - FPC)",mentor:"Keerthana"},{subject:"Introduction to Artificial Intelligence",mentor:"Keerthana"},
-      {subject:"General English - IV",mentor:"Aarthi"},{subject:"Communicative English",mentor:"Aarthi"},
-      {subject:"Language Paper - Tamil IV",mentor:"Kalaiarasi"},{subject:"Statistics II",mentor:"Indumathi"}
-    ]
-  },
-  "Bharathidasan College of Arts & Science": {
-    "I B.Sc CT": [
-      {subject:"Tamil",mentor:"Sridhar"},{subject:"English",mentor:"Priyadharshini"},{subject:"OOPS with Java Programming",mentor:"Dharmaprakash"},
-      {subject:"Office Automation and Internet",mentor:"Anupama"},{subject:"Discrete Mathematics",mentor:"Anuranjana"},
-      {subject:"Effective Communication",mentor:"Priyadharshini"},{subject:"Technical (FOP - Java)",mentor:"Dharmaprakash"},
-      {subject:"Aptitude",mentor:"Karthika"}
-    ],
-    "I BBA CA": [
-      {subject:"Tamil",mentor:"Sridhar"},{subject:"English",mentor:"Priyadharshini"},
-      {subject:"Quantitative Techniques for Management",mentor:"Anuranjana"},{subject:"Effective Communication",mentor:"Priyadharshini"},
-      {subject:"Aptitude",mentor:"Karthika"},{subject:"Organizational Behavior",mentor:"Bhargavi"},
-      {subject:"Technical (FPC - Social Media Marketing)",mentor:"Bhargavi"},{subject:"Economics for Executives",mentor:"Bhargavi"}
-    ],
-    "II B.Sc CT": [
-      {subject:"Tamil",mentor:"Sridhar"},{subject:"English",mentor:"Priyadharshini"},{subject:"Effective Communication",mentor:"Priyadharshini"},
-      {subject:"Aptitude",mentor:"Anuranjana"},{subject:"LINUX and Shell Programming",mentor:"Anupama"},
-      {subject:"System Software and Operating Systems",mentor:"Dharmaprakash"},{subject:"Technical (FOP - DSA)",mentor:"Anupama"},
-      {subject:"Business Accounting",mentor:"Bhargavi"}
-    ]
-  },
-  "Nagarathinam Angalammal Arts & Science College": {
-    "II B.Sc AI": [
-      {subject:"Tamil IV",mentor:"Dharshan K"},{subject:"English IV",mentor:"Monica"},{subject:"Java Programming",mentor:"Mohanasree N"},
-      {subject:"Java Programming Lab",mentor:"Mohanasree N"},{subject:"Financial Analytics",mentor:"Anish N"},
-      {subject:"Environmental Studies",mentor:"Mohanasree N"},{subject:"Web Technology",mentor:"Subhashini K.M"},
-      {subject:"PHP Programming Lab",mentor:"Srisaradha S"},{subject:"Quantitative Aptitude",mentor:"Abirami N"}
-    ],
-    "I B.Sc AI": [
-      {subject:"Tamil II",mentor:"Dharshan K"},{subject:"English II",mentor:"Monica"},
-      {subject:"Object Oriented Programming with C++",mentor:"Subhashini K.M"},{subject:"Lab - Object Oriented Programming with C++",mentor:"Subhashini K.M"},
-      {subject:"Numerical Methods I",mentor:"Abirami N"},{subject:"Fundamentals of Information Technology",mentor:"Srisaradha S"},
-      {subject:"Practical - Advanced Excel",mentor:"Mohanasree N"},{subject:"Quantitative Aptitude",mentor:"Abirami N"}
-    ],
-    "I B.Sc CC": [
-      {subject:"Tamil II",mentor:"Dharshan K"},{subject:"English II",mentor:"Monica"},{subject:"Java Programming",mentor:"Srisaradha S"},
-      {subject:"Lab - Java Programming",mentor:"Srisaradha S"},{subject:"Numerical Methods",mentor:"Abirami N"},
-      {subject:"Quantitative Aptitude",mentor:"Abirami N"},{subject:"Practical - Advanced Excel",mentor:"Subhashini K.M"}
-    ],
-    "BBA DM": [
-      {subject:"Tamil II",mentor:"Dharshan K"},{subject:"English II",mentor:"Monica"},{subject:"Accounting For Managers - I",mentor:"Anish N"},
-      {subject:"Search Engine Optimization",mentor:"Sudaleeswari M.L"},{subject:"International Business",mentor:"Sudaleeswari M.L"},
-      {subject:"Managerial Skill Development",mentor:"Sudaleeswari M.L"},{subject:"Business Etiquette & Corporate Grooming",mentor:"Sudaleeswari M.L"},
-      {subject:"Quantitative Aptitude",mentor:"Abirami N"}
-    ],
-    "B.Com BC & FT": [
-      {subject:"Tamil II",mentor:"Dharshan K"},{subject:"English II",mentor:"Monica"},{subject:"Financial Accounting II",mentor:"Anish N"},
-      {subject:"Business Law",mentor:"Sudaleeswari M.L"},{subject:"Data Analysis Using Excel Lab - Practical",mentor:"Mohanasree N"},
-      {subject:"Smart Contract Lab",mentor:"Subhashini K.M"},{subject:"Block Chain Distributed Ledger Technology",mentor:"Anish N"},
-      {subject:"Quantitative Aptitude",mentor:"Abirami N"}
-    ]
-  },
-  "Vinayaga Mission's Research Foundation School of Arts & Science": {
-    "B.Com FinTech with AI": [
-      {subject:"Tamil - II",mentor:"Kayalvizhi"},{subject:"English II",mentor:"Amritha Anbu"},{subject:"Corporate Accounting",mentor:"Edward Linil"},
-      {subject:"Principles of Management",mentor:"Edward Linil"},{subject:"Problem Solving through Aptitude - I",mentor:"Rajeshwari"},
-      {subject:"Business Mathematics and Statistics",mentor:"Edward Linil"},{subject:"Financial Data Analysis using Excel",mentor:"Edward Linil"}
-    ],
-    "B.Sc AI & ML": [
-      {subject:"Language - II",mentor:"Kayalvizhi"},{subject:"English II",mentor:"Amritha Anbu"},
-      {subject:"Personal Development and Soft Skills",mentor:"Amritha Anbu"},{subject:"Object Oriented Programming in Java Programming",mentor:"Bavatharani"},
-      {subject:"Lab - Java Programming",mentor:"Bavatharani"},{subject:"Front-End Web Development",mentor:"Bavatharani"},
-      {subject:"Design for Developers (UI & UX)",mentor:"Bavatharani"},{subject:"Principles of Management",mentor:"Edward Linil"},
-      {subject:"Problem Solving through Aptitude - II",mentor:"Rajeshwari"}
-    ]
-  },
-  "Sri Amaraavathi College of Arts & Science": {
-    "I BCA": [
-      {subject:"Tamil",mentor:"Kalaiselvi V"},{subject:"Effective Communication",mentor:"Sindu N"},{subject:"General English - II",mentor:"Sindu N"},
-      {subject:"Environmental Studies",mentor:"Nivetha R P"},{subject:"Aptitude",mentor:"Anushruthi S"},
-      {subject:"Numerical Analysis and Probability",mentor:"Anushruthi S"},{subject:"Operational Research",mentor:"Anushruthi S"},
-      {subject:"Programming in Java",mentor:"Nivetha R P"}
-    ],
-    "II BCA": [
-      {subject:"Tamil",mentor:"Kalaiselvi V"},{subject:"Effective Communication",mentor:"Shirlyn Shivani"},{subject:"General English - IV",mentor:"Shirlyn Shivani"},
-      {subject:"Functional Skills",mentor:"Shirlyn Shivani"},{subject:"Aptitude",mentor:"Anushruthi S"},{subject:"DBMS Lab",mentor:"Syed Basila S"},
-      {subject:"DBMS",mentor:"Syed Basila S"},{subject:"Full stack Web Development (MERN)",mentor:"Syed Basila S"},
-      {subject:"DSA",mentor:"Hari Ganesh M"},{subject:"Organizational Behaviour",mentor:"Hari Ganesh M"},
-      {subject:"Computer Application in Business",mentor:"Melbi"}
-    ],
-    "I B.Sc AI & ML": [
-      {subject:"Tamil",mentor:"Kalaiselvi V"},{subject:"Effective Communication",mentor:"Sindu N"},{subject:"General English - II",mentor:"Sindu N"},
-      {subject:"Environmental Studies",mentor:"Nivetha R P"},{subject:"Aptitude",mentor:"Anushruthi S"},
-      {subject:"Numerical Analysis and Probability",mentor:"Anushruthi S"},{subject:"Operational Research",mentor:"Anushruthi S"},
-      {subject:"Programming in Python",mentor:"Syed Basila S"}
-    ],
-    "B.Com FinTech": [
-      {subject:"Tamil",mentor:"Kalaiselvi V"},{subject:"General English II",mentor:"Shirlyn Shivani"},{subject:"Effective Communication",mentor:"Shirlyn Shivani"},
-      {subject:"Environmental Studies",mentor:"Nivetha R P"},{subject:"Aptitude",mentor:"Anushruthi S"},
-      {subject:"Business Accounting",mentor:"Melbi"},{subject:"Business Tools for Decision Making",mentor:"Melbi"},
-      {subject:"Business Economics",mentor:"Melbi"}
-    ]
-  },
-  "Takshashila University": {
-    "II B.Sc CS AI & ML": [
-      {subject:"Tamil - IV",mentor:"Mr Anbarasu"},{subject:"Communicative English - IV",mentor:"Mr Joshin"},
-      {subject:"Full-Stack Web Development",mentor:"Mr Nishant"},{subject:"Natural Language Processing and Artificial Intelligence",mentor:"Ms Sakshi"},
-      {subject:"Data Warehousing and Mining",mentor:"Mr Shabeeb"},{subject:"Software Engineering",mentor:"Mr Nishant"},
-      {subject:"Fundamentals of Cloud Technology",mentor:"Mr Shabeeb"},{subject:"Aptitude",mentor:"Ms Ramya"}
-    ],
-    "I B.Sc CS AI & ML": [
-      {subject:"Tamil II",mentor:"Mr Anbarasu"},{subject:"Functional English",mentor:"Mr Joshin"},
-      {subject:"Object Oriented Programming in Java",mentor:"Ms Sakshi"},{subject:"Front-End Web Development",mentor:"Mr Nishant"},
-      {subject:"Python for Data Science Analytics",mentor:"Ms Sakshi"},{subject:"Digital Marketing and E-commerce",mentor:"Ms Ramya"},
-      {subject:"Analytical Reasoning and Problem Solving",mentor:"Ms Ramya"}
-    ],
-    "B.Com FinTech with AI": [
-      {subject:"Tamil II",mentor:"Mr Anbarasu"},{subject:"Functional English",mentor:"Mr Joshin"},
-      {subject:"Management Accounting",mentor:"Ms Nanageshwari"},{subject:"Corporate Laws",mentor:"Ms Nanageshwari"},
-      {subject:"Business Economics",mentor:"Ms Nanageshwari"},{subject:"Python for Business Application",mentor:"Ms Sakshi"},
-      {subject:"Financial Analysis Using Excel",mentor:"Ms Nanageshwari"},{subject:"Aptitude",mentor:"Ms Ramya"}
-    ]
-  },
-  "Study World Group of Institution": {
-    "BCA": [
-      {subject:"General English",mentor:"Shahul"},{subject:"Communicative English",mentor:"Shahul"},
-      {subject:"Java Programming - Core 3",mentor:"Swetha"},{subject:"Programming Lab - Core Lab 2",mentor:"Swetha"},
-      {subject:"Office Automation and Internet - Core Lab 3",mentor:"Swetha"}
-    ]
-  },
-  "Rathinam College of Arts & Science": {
-    "BCA (AI)": [
-      {subject:"English - II",mentor:"Subashini"},{subject:"Communicative English",mentor:"Subashini"},
-      {subject:"Applied Statistics",mentor:"Kirthika"},{subject:"Aptitude",mentor:"Kirthika"},
-      {subject:"OOPS in Java",mentor:"Janani"},
-      {subject:"Elective 1",isElective:true,electiveOptions:[{label:"Python for Data Analytics",mentor:"Janani"}]},
-      {subject:"Elective 2",isElective:true,electiveOptions:[{label:"Fundamentals for Computer Architecture",mentor:"Anto Jegan"}]}
-    ],
-    "B.Sc CT (GenAI)": [
-      {subject:"English - II",mentor:"Subashini"},{subject:"Communicative English",mentor:"Subashini"},
-      {subject:"Applied Statistics",mentor:"Kirthika"},{subject:"Aptitude",mentor:"Kirthika"},
-      {subject:"OOPS in Java",mentor:"Anto Jegan"},
-      {subject:"Elective 1",isElective:true,electiveOptions:[{label:"Python for Data Analytics",mentor:"Janani"}]},
-      {subject:"Elective 2",isElective:true,electiveOptions:[{label:"Fundamentals for Computer Architecture",mentor:"Anto Jegan"}]}
-    ]
-  },
-  "Noorul Islam Centre for Higher Education (NICHE)": {
-    "B.Sc AI & ML": [
-      {subject:"Tamil",mentor:"Kalaiarasi"},{subject:"Communicative English",mentor:"Nishanthini"},
-      {subject:"Mathematics for Computer Science",mentor:"Indhumathi"},{subject:"Aptitude",mentor:"Indhumathi"},
-      {subject:"Python (FOP)",mentor:"Aasik"},{subject:"UI & UX",mentor:"Aasik"}
-    ]
-  },
-  "AMET University": {
-    "II B.Sc AI & ML": [
-      {subject:"Machine Learning",mentor:"Mr. Aakaash M"},{subject:"Full Stack Web Development",mentor:"Ms. Dhachayani"},
-      {subject:"Big Data Analytics",mentor:"Mr. Aakaash M"},{subject:"Networking and Security",mentor:"Ms. Dhachayani"},
-      {subject:"Internet of Things (IoT) Concepts",mentor:"Mr. Tamilarasan D"},{subject:"Digital Marketing and E-Commerce",mentor:"Mrs. Sruthi V"},
-      {subject:"Time Series",mentor:"Mr. Tamilarasan D"},{subject:"Aptitude",mentor:"Dr. Jayashree"},
-      {subject:"Effective Communication Skills",mentor:"Mrs. Catherin"},{subject:"Machine Learning Lab",mentor:"Mr. Aakaash M"}
-    ],
-    "I B.Sc AI & ML": [
-      {subject:"Effective Communication Skills",mentor:"Mrs. Catherin"},{subject:"Personal Development and Soft Skills",mentor:"Mrs. Catherin"},
-      {subject:"Applied Statistics",mentor:"Dr. Jayashree"},{subject:"Object Oriented Programming in Java",mentor:"Mr. Tamilarasan D"},
-      {subject:"Data Science Analytics",mentor:"Mr. Aakaash M"},{subject:"Java Programming - Lab",mentor:"Mr. Tamilarasan D"},
-      {subject:"Front-End Web Development",mentor:"Ms. Dhachayani"},{subject:"Problem Solving through Aptitude - II",mentor:"Dr. Jayashree"}
-    ],
-    "I B.Sc AI & DS": [
-      {subject:"Effective Communication Skills",mentor:"Mrs. Catherin"},{subject:"Personal Development and Soft Skills",mentor:"Mrs. Catherin"},
-      {subject:"Applied Statistics",mentor:"Dr. Jayashree"},{subject:"Object Oriented Programming in Java",mentor:"Mr. Tamilarasan D"},
-      {subject:"Data Science Analytics",mentor:"Mr. Aakaash M"},{subject:"Java Programming - Lab",mentor:"Mr. Tamilarasan D"},
-      {subject:"Front-End Web Development",mentor:"Ms. Dhachayani"},{subject:"Problem Solving through Aptitude - II",mentor:"Dr. Jayashree"}
-    ],
-    "I B.Com Fintech with AI": [
-      {subject:"Corporate Accounting",mentor:"Mr. Santhosh"},{subject:"Securities Markets Regulations and Practices",mentor:"Mr. Santhosh"},
-      {subject:"Managerial Economics",mentor:"Mr. Santhosh"},{subject:"Professional Networking and Presentation Skills",mentor:"Dr. Harisankar"},
-      {subject:"Effective Communication",mentor:"Dr. Harisankar"},{subject:"Problem Solving through Aptitude - II",mentor:"Dr. Jayashree"},
-      {subject:"Financial Data Analysis",mentor:"Mr. Santhosh"},{subject:"Python for Business Applications",mentor:"Mr. Tamilarasan D"}
-    ],
-    "I BBA E-Commerce & Digital Marketing": [
-      {subject:"Personal Development and Soft Skills",mentor:"Dr. Harisankar"},{subject:"Effective Communication",mentor:"Dr. Harisankar"},
-      {subject:"Managerial Economics",mentor:"Mr. Santhosh"},{subject:"E-commerce and Consumer Behaviour",mentor:"Mr. Syed Asrar Ahmed U"},
-      {subject:"Search Engine Optimization (SEO)",mentor:"Mrs. Sruthi V"},{subject:"Problem Solving through Aptitude - II",mentor:"Dr. Jayashree"},
-      {subject:"Social Media Marketing",mentor:"Mrs. Sruthi V"},{subject:"PPC Marketing - I",mentor:"Mrs. Sruthi V"},
-      {subject:"Capstone Projects - I",mentor:"Mrs. Sruthi V"}
-    ]
-  },
-  "Joy University": {
-    "BCA AI": [
-      {subject:"Effective Communication",mentor:"Prasaanth"},{subject:"Applied Statistics",mentor:"Indhumathi"},
-      {subject:"Aptitude",mentor:"Prasaanth"},{subject:"Java (Advanced FOP & OOPS)",mentor:"Preethi"},
-      {subject:"Data Structures",mentor:"Preethi"},{subject:"Python for Data Science",mentor:"Preethi"},
-      {subject:"Front End Development",mentor:"Preethi"}
-    ]
-  },
-  "Sasurie College of Arts and Science": {
-    "B.Sc AI & DS": [
-      {subject:"Tamil",mentor:"Sridhar"},{subject:"General English",mentor:"Dharshinee"},{subject:"Communicative English",mentor:"Dharshinee"},
-      {subject:"Internet Basics - Lab",mentor:"Jagadeesan"},{subject:"FOP - Python",mentor:"Jagadeesan"},
-      {subject:"FOP - Python - Lab",mentor:"Jagadeesan"},{subject:"Optimization Techniques",mentor:"Anuranjana"},
-      {subject:"Human Rights",mentor:"Jagadeesan"}
-    ],
-    "B.Sc CS": [
-      {subject:"Tamil",mentor:"Sridhar"},{subject:"General English",mentor:"Dharshinee"},{subject:"Communicative English",mentor:"Dharshinee"},
-      {subject:"OOPS with Java",mentor:"Abirami"},{subject:"Java - Lab",mentor:"Abirami"},
-      {subject:"Internet Basics - Lab",mentor:"Abirami"},{subject:"Discrete Mathematics",mentor:"Anuranjana"},
-      {subject:"Human Rights",mentor:"Abirami"}
-    ],
-    "B.Sc IT": [
-      {subject:"Tamil",mentor:"Sridhar"},{subject:"General English",mentor:"Dharshinee"},{subject:"Communicative English",mentor:"Dharshinee"},
-      {subject:"OOPS with Java",mentor:"Abirami"},{subject:"Java - Lab",mentor:"Abirami"},
-      {subject:"Office Automation and Internet Lab",mentor:"Abirami"},{subject:"Discrete Mathematics",mentor:"Anuranjana"},
-      {subject:"Human Rights",mentor:"Abirami"}
-    ],
-    "BBA CA": [
-      {subject:"Tamil",mentor:"Sridhar"},{subject:"General English",mentor:"Dharshinee"},{subject:"Communicative English",mentor:"Dharshinee"},
-      {subject:"Organizational Behaviour",mentor:"Madhumitha"},{subject:"Economics for Executives",mentor:"Madhumitha"},
-      {subject:"Quantitative Techniques for Management",mentor:"Anuranjana"},{subject:"Human Rights",mentor:"Madhumitha"},
-      {subject:"SEO",mentor:"Madhumitha"},{subject:"Aptitude",mentor:"Anuranjana"}
-    ],
-    "B.Com PA": [
-      {subject:"Tamil",mentor:"Sridhar"},{subject:"General English",mentor:"Dharshinee"},{subject:"Communicative English",mentor:"Dharshinee"},
-      {subject:"Financial Accounting II",mentor:"Sarumathi"},{subject:"Commercial Law",mentor:"Sarumathi"},
-      {subject:"Business Economics",mentor:"Sarumathi"},{subject:"Aptitude",mentor:"Anuranjana"},
-      {subject:"Tally",mentor:"Sarumathi"},{subject:"SEBI",mentor:"Sarumathi"}
-    ]
-  },
-  "S-VYASA University": {
-    "II BCA": [
-      {subject:"Full Stack Web Development",mentor:"Mr. Neeraj"},{subject:"Machine Learning",mentor:"Ms. Moushreeta"},
-      {subject:"Big Data Analytics",mentor:"Ms. Darathi"},{subject:"Computer Networks",mentor:"Ms. Rakshitha"},
-      {subject:"Elective I",isElective:true,electiveOptions:[{label:"Introduction to Data Analytics",mentor:"Ms. Darathi"},{label:"Fundamentals of Ethical Hacking",mentor:"Ms. Rakshitha"}]},
-      {subject:"Elective II",isElective:true,electiveOptions:[{label:"Software Architecture and Design",mentor:"Mr. Neeraj"},{label:"Statistics for Machine Learning",mentor:"Ms. Moushreeta"},{label:"Digital Forensics and Incident Response",mentor:"Ms. Darathi"},{label:"Fundamentals of Cloud Computing",mentor:"Ms. Rakshitha"}]},
-      {subject:"Lab - Full Stack Web Development",mentor:"Mr. Neeraj"},{subject:"Lab - Machine Learning",mentor:"Ms. Moushreeta"},
-      {subject:"Aptitude",mentor:"Ms. Ramalakshmi B"},{subject:"Verbal Ability",mentor:"Ms. Harshitha J"}
-    ]
-  },
-  "Alliance University": {
-    "I BCA (DS + AI & ML)": [
-      {subject:"Introduction to Data Science",mentor:"Gomathy V"},{subject:"Data Structures and Algorithms",mentor:"Lakshmi Devi S"},
-      {subject:"Object Oriented Programming Java",mentor:"Renita Joy"},{subject:"Lab - Object Oriented Programming Java",mentor:"Renita Joy"},
-      {subject:"Statistics for Data Science",mentor:"Mahendra Babu"},{subject:"Interpersonal and Essential Skills - II",mentor:"Saviyo Sabu"},
-      {subject:"Analytical Reasoning and Problem Solving - II",mentor:"Ajith Pandian"}
-    ],
-    "I BCA (Game Development)": [
-      {subject:"Design for Development",mentor:"Abhishek A"},{subject:"Data Structures and Algorithms",mentor:"Lakshmi Devi S"},
-      {subject:"Object Oriented Programming Java",mentor:"Renita Joy"},{subject:"Lab - Object Oriented Programming Java",mentor:"Renita Joy"},
-      {subject:"Discrete Mathematics",mentor:"Mahendra Babu"},{subject:"Interpersonal and Essential Skills - II",mentor:"Saviyo Sabu"},
-      {subject:"Analytical Reasoning and Problem Solving - II",mentor:"Ajith Pandian"}
-    ],
-    "II BCA DS (A+B)": [
-      {subject:"Full Stack Development",mentor:"Raghav Reddy"},{subject:"Data Warehousing and Mining",mentor:"Nagashri"},
-      {subject:"Natural Language Processing",mentor:"Nagashri"},{subject:"Artificial Intelligence",mentor:"Gomathy V"},
-      {subject:"Software Engineering",mentor:"Raghav Reddy"},{subject:"Cloud Computing",mentor:"Lakshmi Devi S"},
-      {subject:"Virtual Internship",mentor:"Abhishek A"}
-    ],
-    "II BCA AI & ML (A+B)": [
-      {subject:"Full Stack Development",mentor:"Raghav Reddy"},{subject:"Data Warehousing and Mining",mentor:"Nagashri"},
-      {subject:"Natural Language Processing",mentor:"Nagashri"},{subject:"Artificial Intelligence",mentor:"Gomathy V"},
-      {subject:"Software Engineering",mentor:"Raghav Reddy"},{subject:"Cloud Computing",mentor:"Lakshmi Devi S"},
-      {subject:"Virtual Internship",mentor:"Abhishek A"}
-    ],
-    "II BCA Game Development (A+B)": [
-      {subject:"Full Stack Development",mentor:"Raghav Reddy"},{subject:"Introduction to Game Development",mentor:"Santosh Goyal"},
-      {subject:"Introduction to Game Engines",mentor:"Santosh Goyal"},{subject:"Fundamentals of Data Science",mentor:"Aman Kumar Sharma"},
-      {subject:"Software Engineering",mentor:"Raghav Reddy"},{subject:"Cloud Computing",mentor:"Lakshmi Devi S"},
-      {subject:"Virtual Internship",mentor:"Abhishek A"}
-    ],
-    "I MCA - A": [
-      {subject:"Applied Statistics",mentor:"Mahendra Babu"},{subject:"Communication and Life Skills - II",mentor:"Saviyo Sabu"},
-      {subject:"Problem Solving through Aptitude - II",mentor:"Ajith Pandian"},{subject:"Advanced Data Structures and Algorithms",mentor:"Lakshmi Devi S"},
-      {subject:"Java Object-Oriented Design and Programming",mentor:"Gomathy V"},{subject:"Database Design and Implementation",mentor:"Aman Kumar Sharma"},
-      {subject:"Machine Learning Theory and Practice",mentor:"Tanisha Das"}
-    ],
-    "I MCA - B": [
-      {subject:"Applied Statistics",mentor:"Mahendra Babu"},{subject:"Communication and Life Skills - II",mentor:"Saviyo Sabu"},
-      {subject:"Problem Solving through Aptitude - II",mentor:"Ajith Pandian"},{subject:"Advanced Data Structures and Algorithms",mentor:"Lakshmi Devi S"},
-      {subject:"Java Object-Oriented Design and Programming",mentor:"Santosh Goyal"},{subject:"Database Design and Implementation",mentor:"Dr Lenin"},
-      {subject:"Machine Learning Theory and Practice",mentor:"Tanisha Das"}
-    ]
-  },
-  "Kristu Jayanti (Deemed to be University)": {
-    "BBA - AI & DS": [
-      {subject:"Optimising User Engagement in Business Systems",mentor:"Ishika Bhattacharjee"},
-      {subject:"Supervised and Unsupervised Learning in Management",mentor:"Anwesha"},{subject:"SQL",mentor:"Anwesha"}
-    ],
-    "BBA - FinTech": [
-      {subject:"Digital Technology in Banks",mentor:"Prarthana"},{subject:"FOP - Python Programming",mentor:"Ishika Bhattacharjee"}
-    ]
-  },
-  "Asian School of Business": {
-    "BCA": [
-      {subject:"Introduction to Data Science",mentor:"Aswanth"},{subject:"Object Oriented Programming in Java",mentor:"Athira"},
-      {subject:"Lab - Object Oriented Programming in Java",mentor:"Athira"},{subject:"Computer Networks",mentor:"Athira"},
-      {subject:"Statistics for Data Science",mentor:"Anjali"},{subject:"Interpersonal and Essential Skills - II",mentor:"Arvind"},
-      {subject:"Environmental Studies",mentor:"Arvind"}
-    ],
-    "BBA": [
-      {subject:"Marketing Management - I",mentor:"Yadhu Krishnan"},{subject:"Business Economics",mentor:"Parvathy"},
-      {subject:"Human Resource Management",mentor:"Parvathy"},{subject:"Financial Markets and Literacy",mentor:"Pooja"},
-      {subject:"Fundamentals of Search Engine Optimization",mentor:"Yadhu Krishnan"},{subject:"Applied English",mentor:"Arvind"},
-      {subject:"Additional Language - Hindi",mentor:"Athulya"},{subject:"Additional Language - Malayalam",mentor:"Athulya"}
-    ],
-    "B.Com": [
-      {subject:"Corporate Laws",mentor:"Lekha"},{subject:"Management Accounting",mentor:"Pooja"},
-      {subject:"Securities Markets Regulations and Practices",mentor:"Lekha"},{subject:"Introduction to Artificial Intelligence",mentor:"Aswanth"},
-      {subject:"Business Economics",mentor:"Parvathy"},{subject:"Python for Business Applications",mentor:"Aswanth"},
-      {subject:"Marketing Management",mentor:"Yadhu Krishnan"},{subject:"Indian Constitution",mentor:"Anjali"}
-    ]
-  }
-};
-
-// ─── COLLEGE → DEPARTMENT ─────────────────────────────────────────────────────
-document.getElementById('collegeName').addEventListener('change', function () {
-  const college = this.value;
-  const deptSel = document.getElementById('department');
-  deptSel.innerHTML = '<option value="" disabled selected>Select your department</option>';
-  document.getElementById('facultySections').innerHTML = '';
-  document.getElementById('dynamicContent').style.display = 'none';
-  if (COLLEGE_DATA[college]) {
-    deptSel.disabled = false;
-    Object.keys(COLLEGE_DATA[college]).forEach(d => {
-      const o = document.createElement('option');
-      o.value = d; o.textContent = d;
-      deptSel.appendChild(o);
+async function loadData() {
+  try {
+    // Try Supabase first
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/feedback_responses?select=*`, {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+      }
     });
-  } else {
-    deptSel.disabled = true;
-    deptSel.innerHTML = '<option value="" disabled selected>No departments available</option>';
-  }
-  updateProgress();
-});
 
-document.getElementById('department').addEventListener('change', function () {
-  const college = document.getElementById('collegeName').value;
-  const dept = this.value;
-  const container = document.getElementById('facultySections');
-  container.innerHTML = '';
-  if (!COLLEGE_DATA[college] || !COLLEGE_DATA[college][dept]) return;
-  COLLEGE_DATA[college][dept].forEach((sub, idx) => {
-    const sec = document.createElement('div');
-    sec.className = 'section';
-    sec.style.animationDelay = `${0.15 + idx * 0.05}s`;
-    sec.innerHTML = sub.isElective ? buildElective(sub, idx) : buildCard(sub, idx);
-    container.appendChild(sec);
-  });
-  document.getElementById('dynamicContent').style.display = 'block';
-  updateProgress();
-});
-
-function buildScaleHtml(n) {
-  let btns = '';
-  for (let v = 1; v <= 5; v++) {
-    btns += `<div class="scale-circle-wrap">
-      <input type="radio" id="sr${n}v${v}" name="s${n}_rating" value="${v}" ${v===1?'required':''}>
-      <label for="sr${n}v${v}" data-v="${v}"><span class="s-num">${v}</span><span class="s-word">${SCALE_WORDS[v]}</span></label>
-      <div class="s-circle-label">${SCALE_WORDS[v]}</div>
-    </div>`;
+    if (response.ok) {
+      allData = await response.json();
+      dataSource = 'supabase';
+      showDataSourceBadge('Supabase', 'primary');
+      console.log('✅ Loaded from Supabase:', allData.length, 'records');
+      return true;
+    }
+  } catch (err) {
+    console.warn('Supabase failed, trying Google Sheets fallback...', err);
   }
-  return `<div class="rating-block" id="ratingBlock${n}">
-    <div class="rating-block-title">Overall Rating — Rate your faculty based on your learning experience</div>
-    <div class="scale-btns" id="scaleBtns${n}">${btns}</div>
-    <div class="err-msg" style="margin-top:4px;">Please select a rating</div>
+
+  // Fallback to Google Sheets
+  try {
+    const response = await fetch(GOOGLE_SHEETS_URL);
+    if (response.ok) {
+      const data = await response.json();
+      allData = data.data || [];
+      dataSource = 'sheets';
+      showDataSourceBadge('Google Sheets (Fallback)', 'sheets');
+      console.log('✅ Loaded from Google Sheets:', allData.length, 'records');
+      return true;
+    }
+  } catch (err) {
+    console.error('Both data sources failed:', err);
+  }
+
+  dataSource = 'error';
+  return false;
+}
+
+function showDataSourceBadge(text, type) {
+  const badge = document.getElementById('dataSourceBadge');
+  badge.innerHTML = `<div class="data-source-badge ${type}">
+    <span>${type === 'primary' ? '🔵' : '🟢'}</span>
+    <span>Data Source: ${text}</span>
   </div>`;
 }
 
-function buildCard(sub, idx) {
-  const n = idx + 1;
-  let qs = '';
-  QUESTIONS.forEach((q, qi) => {
-    const yId = `s${n}q${qi}y`, nId = `s${n}q${qi}n`;
-    qs += `<div class="yn-row" id="yn_${n}_${qi}">
-      <span class="yn-qnum">Q${qi+1}</span>
-      <span class="yn-text">${q}</span>
-      <div class="yn-btns">
-        <input type="radio" id="${yId}" name="s${n}_q${qi}" value="Yes" required>
-        <label for="${yId}" class="yes-lbl">Yes</label>
-        <input type="radio" id="${nId}" name="s${n}_q${qi}" value="No">
-        <label for="${nId}" class="no-lbl">No</label>
-      </div>
-    </div>`;
-  });
-  return `
-    <input type="hidden" name="subject${n}_Name" value="${sub.subject}">
-    <input type="hidden" name="subject${n}_Mentor" value="${sub.mentor}">
-    <div class="faculty-header">
-      <div class="faculty-avatar">${n}</div>
-      <div class="faculty-meta">
-        <div class="faculty-name">${sub.mentor}</div>
-        <div class="faculty-subject">${sub.subject}</div>
-      </div>
-    </div>
-    ${buildScaleHtml(n)}
-    <div class="yn-list">${qs}</div>
-    <div class="err-msg" id="err_${n}" style="margin-top:8px;">Please answer all questions for this faculty</div>`;
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ═══════════════════════════════════════════════════════════════════════════
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById(tabName).classList.add('active');
+
+  // Load tab data
+  if (tabName === 'overview') renderOverview();
+  if (tabName === 'detailed') renderDetailed();
+  if (tabName === 'faculty') renderFaculty();
+  if (tabName === 'nps') renderNPS();
 }
 
-function buildElective(sub, idx) {
-  const n = idx + 1;
-  const opts = sub.electiveOptions.map((o,oi) =>
-    `<option value="${oi}" data-mentor="${o.mentor}">${o.label}</option>`
-  ).join('');
-  let qs = '';
-  QUESTIONS.forEach((q, qi) => {
-    const yId = `s${n}q${qi}y`, nId = `s${n}q${qi}n`;
-    qs += `<div class="yn-row" id="yn_${n}_${qi}">
-      <span class="yn-qnum">Q${qi+1}</span><span class="yn-text">${q}</span>
-      <div class="yn-btns">
-        <input type="radio" id="${yId}" name="s${n}_q${qi}" value="Yes" class="elective-r-${n}">
-        <label for="${yId}" class="yes-lbl">Yes</label>
-        <input type="radio" id="${nId}" name="s${n}_q${qi}" value="No" class="elective-r-${n}">
-        <label for="${nId}" class="no-lbl">No</label>
-      </div>
-    </div>`;
+// ═══════════════════════════════════════════════════════════════════════════
+// OVERVIEW TAB
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderOverview() {
+  const colleges = [...new Set(allData.map(r => r.college_name))];
+  
+  // Populate filter
+  const filter = document.getElementById('overviewCollegeFilter');
+  filter.innerHTML = '<option value="">All Colleges</option>';
+  colleges.forEach(c => {
+    filter.innerHTML += `<option value="${c}">${c}</option>`;
   });
-  return `
-    <input type="hidden" name="subject${n}_Name" id="electSubj${n}">
-    <input type="hidden" name="subject${n}_Mentor" id="electMentor${n}">
-    <div class="section-title" style="margin-bottom:16px;">
-      <div class="icon icon-purple">${n}</div>
-      ${sub.subject}
-      <span style="font-size:11px;font-weight:400;color:var(--accent2);margin-left:4px;">(Choose your elective)</span>
-    </div>
-    <div class="field" style="margin-bottom:16px;">
-      <label>Select Your Elective <span class="req">*</span></label>
-      <div class="select-wrapper">
-        <select id="electSel${n}" required onchange="handleElective(this,${n})">
-          <option value="" disabled selected>— Choose elective subject —</option>
-          ${opts}
-        </select>
-      </div>
-      <div class="err-msg">Please select an elective</div>
-    </div>
-    <div id="electDetail${n}" style="display:none;">
-      <div class="elective-mentor-badge"><span id="electMentorDisplay${n}">—</span></div>
-      ${buildScaleHtml(n)}
-      <div class="yn-list">${qs}</div>
-      <div class="err-msg" id="err_${n}" style="margin-top:8px;">Please answer all questions for this faculty</div>
-    </div>`;
+
+  filterOverview();
 }
 
-function handleElective(sel, n) {
-  const chosen = sel.options[sel.selectedIndex];
-  const mentor = chosen.getAttribute('data-mentor');
-  document.getElementById(`electMentorDisplay${n}`).textContent = mentor;
-  document.getElementById(`electMentor${n}`).value = mentor;
-  document.getElementById(`electSubj${n}`).value = chosen.textContent;
-  document.getElementById(`electDetail${n}`).style.display = 'block';
-  document.querySelectorAll(`.elective-r-${n}`).forEach(r => r.required = true);
-  document.querySelectorAll(`[name="s${n}_rating"]`).forEach(r => r.required = true);
-  updateProgress();
-}
+function filterOverview() {
+  const selectedCollege = document.getElementById('overviewCollegeFilter').value;
+  const filtered = selectedCollege 
+    ? allData.filter(r => r.college_name === selectedCollege)
+    : allData;
 
-function toggleCheck(labelEl, id, mode) {
-  const cb = document.getElementById(id);
-  if (mode === 'exclusive') {
-    const wasChecked = cb.checked;
-    CHALLENGE_IDS.forEach(cid => {
-      const el = document.getElementById(cid);
-      if (el) { el.checked = false; el.closest('.check-item').classList.remove('checked'); }
-    });
-    if (!wasChecked) { cb.checked = true; labelEl.classList.add('checked'); }
-  } else {
-    const noneEl = document.getElementById('challenge_none');
-    if (noneEl) { noneEl.checked = false; noneEl.closest('.check-item').classList.remove('checked'); }
-    cb.checked = !cb.checked;
-    labelEl.classList.toggle('checked', cb.checked);
-  }
-  document.getElementById('challengeErr').style.display = 'none';
-  updateProgress();
-}
+  // Calculate stats
+  const totalResponses = filtered.length;
+  const avgNPS = (filtered.reduce((sum, r) => sum + (r.nps_score || 0), 0) / totalResponses).toFixed(2);
+  const promoters = filtered.filter(r => r.nps_score >= 9).length;
+  const passives = filtered.filter(r => r.nps_score >= 7 && r.nps_score <= 8).length;
+  const detractors = filtered.filter(r => r.nps_score <= 6 && r.nps_score !== null).length;
+  const npsIndex = Math.round(((promoters - detractors) / totalResponses) * 100);
 
-function atLeastOneChallengeSelected() {
-  return CHALLENGE_IDS.some(id => { const el = document.getElementById(id); return el && el.checked; });
-}
-
-function updateProgress() {
-  let req = 0, done = 0;
-  const groups = new Set();
-  document.querySelectorAll('[required]').forEach(el => {
-    if (el.offsetParent === null) return;
-    if (el.type === 'radio') { groups.add(el.name); return; }
-    if (el.type === 'hidden') return;
-    req++;
-    if (el.tagName === 'SELECT') { if (el.value) done++; }
-    else { if (el.value.trim()) done++; }
-  });
-  groups.forEach(name => {
-    req++;
-    if (document.querySelector(`[name="${name}"]:checked`)) done++;
-  });
-  req++;
-  if (atLeastOneChallengeSelected()) done++;
-  const pct = Math.min(100, Math.round((done / Math.max(req, 1)) * 100));
-  document.getElementById('progressBar').style.width = pct + '%';
-  document.getElementById('pct').textContent = pct + '%';
-}
-
-document.addEventListener('change', e => {
-  if (e.target.name === 'ape_q2') {
-    const wrap = document.getElementById('ape_q2_detail_wrap');
-    const ta = document.getElementById('ape_q2_detail');
-    if (e.target.value === 'No') { wrap.classList.add('visible'); ta.required = true; }
-    else { wrap.classList.remove('visible'); ta.required = false; ta.value = ''; const f = ta.closest('.field'); if(f) f.classList.remove('error'); }
-  }
-  if (e.target.type === 'radio' && e.target.name && e.target.name.endsWith('_rating')) {
-    const sb = e.target.closest('.scale-btns'); if(sb) sb.classList.add('has-selection');
-    const rb = e.target.closest('.rating-block'); if(rb) rb.classList.remove('error-rating');
-  }
-  if (e.target.name === 'ape_q3_rating') { document.getElementById('apeScaleBtns3').classList.add('has-selection'); document.getElementById('ape_q3_block').classList.remove('error-rating'); }
-  if (e.target.name === 'ape_q4_rating') { document.getElementById('apeScaleBtns4').classList.add('has-selection'); document.getElementById('ape_q4_block').classList.remove('error-rating'); }
-  if (e.target.name === 'nps_score') { document.getElementById('npsBlock').classList.remove('error-nps'); }
-  if (e.target.type === 'radio') { const row = e.target.closest('.yn-row'); if(row) row.classList.remove('error-row'); }
-  const field = e.target.closest('.field');
-  if (field && field.classList.contains('error')) field.classList.remove('error');
-  updateProgress();
-});
-document.addEventListener('input', e => {
-  const field = e.target.closest('.field');
-  if (field && field.classList.contains('error')) field.classList.remove('error');
-  updateProgress();
-});
-
-function validateForm() {
-  let valid = true, first = null;
-  document.querySelectorAll('#feedbackForm .field').forEach(field => {
-    const inp = field.querySelector('input:not([type="radio"]):not([type="hidden"]):not([type="checkbox"]), select, textarea');
-    if (!inp || inp.offsetParent === null) return;
-    let ok = true;
-    if (inp.type === 'email') ok = inp.value.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inp.value);
-    else if (inp.tagName === 'SELECT') ok = !!inp.value;
-    else if (inp.required) ok = !!inp.value.trim();
-    if (!ok) { field.classList.add('error'); valid = false; if (!first) first = field; }
-    else field.classList.remove('error');
-  });
-  if (!atLeastOneChallengeSelected()) {
-    document.getElementById('challengeErr').style.display = 'block'; valid = false;
-    if (!first) first = document.getElementById('challengeList');
-  }
-  ['ape_q3_rating','ape_q4_rating'].forEach((name,i) => {
-    const blockId = `ape_q${i+3}_block`, block = document.getElementById(blockId);
-    if (!document.querySelector(`[name="${name}"]:checked`)) { block.classList.add('error-rating'); valid = false; if(!first) first=block; }
-    else block.classList.remove('error-rating');
-  });
-  ['ape_q1','ape_q2'].forEach((name,qi) => {
-    const row = document.getElementById(`ape_q${qi+1}_row`);
-    if (!document.querySelector(`[name="${name}"]:checked`)) { row.classList.add('error-row'); valid = false; if(!first) first=row; }
-    else row.classList.remove('error-row');
-  });
-  if (!document.querySelector('[name="nps_score"]:checked')) {
-    document.getElementById('npsBlock').classList.add('error-nps'); valid = false;
-    if (!first) first = document.getElementById('npsBlock');
-  }
-  ['nps_fu1','nps_fu2','nps_fu3','nps_fu4'].forEach((name,qi) => {
-    const row = document.getElementById(`nps_fu${qi+1}_row`);
-    if (!document.querySelector(`[name="${name}"]:checked`)) { row.classList.add('error-row'); valid = false; if(!first) first=row; }
-    else row.classList.remove('error-row');
-  });
-  const college = document.getElementById('collegeName').value;
-  const dept = document.getElementById('department').value;
-  if (college && dept && COLLEGE_DATA[college] && COLLEGE_DATA[college][dept]) {
-    COLLEGE_DATA[college][dept].forEach((sub, idx) => {
-      const n = idx + 1;
-      const ratingBlock = document.getElementById(`ratingBlock${n}`);
-      if (ratingBlock && ratingBlock.offsetParent !== null) {
-        if (!document.querySelector(`[name="s${n}_rating"]:checked`)) { ratingBlock.classList.add('error-rating'); valid = false; if(!first) first=ratingBlock; }
-        else ratingBlock.classList.remove('error-rating');
+  // Calculate average rating across all subjects
+  let totalRatings = 0;
+  let ratingCount = 0;
+  filtered.forEach(r => {
+    for (let i = 1; i <= 7; i++) {
+      const rating = r[`subject${i}_rating`];
+      if (rating) {
+        totalRatings += parseFloat(rating);
+        ratingCount++;
       }
-      QUESTIONS.forEach((_,qi) => {
-        const row = document.getElementById(`yn_${n}_${qi}`);
-        if (!document.querySelector(`[name="s${n}_q${qi}"]:checked`) && row && row.offsetParent !== null) {
-          row.classList.add('error-row'); valid = false; if(!first) first=row;
-        } else if (row) row.classList.remove('error-row');
-      });
+    }
+  });
+  const avgRating = ratingCount > 0 ? (totalRatings / ratingCount).toFixed(2) : 'N/A';
+
+  // Render stats cards
+  document.getElementById('overviewStats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total Responses</div>
+      <div class="stat-value primary">${totalResponses}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Average NPS Score</div>
+      <div class="stat-value">${avgNPS}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">NPS Index</div>
+      <div class="stat-value ${npsIndex >= 50 ? 'success' : npsIndex >= 0 ? 'warning' : 'error'}">${npsIndex}%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Average Rating</div>
+      <div class="stat-value">${avgRating}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Promoters (9-10)</div>
+      <div class="stat-value success">${promoters}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Passives (7-8)</div>
+      <div class="stat-value warning">${passives}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Detractors (0-6)</div>
+      <div class="stat-value error">${detractors}</div>
+    </div>
+  `;
+
+  // Render college breakdown table
+  if (!selectedCollege) {
+    const collegeStats = {};
+    allData.forEach(r => {
+      if (!collegeStats[r.college_name]) {
+        collegeStats[r.college_name] = {
+          total: 0,
+          npsSum: 0,
+          promoters: 0,
+          passives: 0,
+          detractors: 0,
+          ratingSum: 0,
+          ratingCount: 0
+        };
+      }
+      const stats = collegeStats[r.college_name];
+      stats.total++;
+      stats.npsSum += r.nps_score || 0;
+      if (r.nps_score >= 9) stats.promoters++;
+      else if (r.nps_score >= 7) stats.passives++;
+      else if (r.nps_score !== null) stats.detractors++;
+      
+      for (let i = 1; i <= 7; i++) {
+        const rating = r[`subject${i}_rating`];
+        if (rating) {
+          stats.ratingSum += parseFloat(rating);
+          stats.ratingCount++;
+        }
+      }
+    });
+
+    let tableHTML = '';
+    Object.keys(collegeStats).forEach(college => {
+      const s = collegeStats[college];
+      const avgNPS = (s.npsSum / s.total).toFixed(2);
+      const npsIndex = Math.round(((s.promoters - s.detractors) / s.total) * 100);
+      const avgRating = s.ratingCount > 0 ? (s.ratingSum / s.ratingCount).toFixed(2) : 'N/A';
+      
+      tableHTML += `
+        <tr>
+          <td><strong>${college}</strong></td>
+          <td>${s.total}</td>
+          <td>${avgNPS}</td>
+          <td><span class="badge ${npsIndex >= 50 ? 'success' : npsIndex >= 0 ? 'warning' : 'error'}">${npsIndex}%</span></td>
+          <td>${avgRating}</td>
+          <td>${s.promoters}</td>
+          <td>${s.passives}</td>
+          <td>${s.detractors}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById('overviewTableBody').innerHTML = tableHTML;
+    document.getElementById('overviewTable').style.display = 'block';
+  } else {
+    document.getElementById('overviewTable').style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DETAILED RESPONSES TAB
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderDetailed() {
+  const colleges = [...new Set(allData.map(r => r.college_name))];
+  const collegeFilter = document.getElementById('detailedCollegeFilter');
+  collegeFilter.innerHTML = '<option value="">All Colleges</option>';
+  colleges.forEach(c => {
+    collegeFilter.innerHTML += `<option value="${c}">${c}</option>`;
+  });
+
+  filterDetailed();
+}
+
+function filterDetailed() {
+  const college = document.getElementById('detailedCollegeFilter').value;
+  const dept = document.getElementById('detailedDeptFilter').value;
+  
+  // Update department filter based on selected college
+  if (college) {
+    const depts = [...new Set(allData.filter(r => r.college_name === college).map(r => r.department))];
+    const deptFilter = document.getElementById('detailedDeptFilter');
+    deptFilter.innerHTML = '<option value="">All Departments</option>';
+    depts.forEach(d => {
+      deptFilter.innerHTML += `<option value="${d}">${d}</option>`;
     });
   }
-  if (!valid && first) { first.scrollIntoView({behavior:'smooth',block:'center'}); showToast('Please answer all required questions','error'); }
-  return valid;
-}
 
-function showToast(msg, type='success') {
-  const t = document.getElementById('toast');
-  t.textContent = (type==='success'?'✅ ':'❌ ') + msg;
-  t.className = 'show ' + type;
-  setTimeout(() => t.className = '', 4000);
-}
+  let filtered = allData;
+  if (college) filtered = filtered.filter(r => r.college_name === college);
+  if (dept) filtered = filtered.filter(r => r.department === dept);
 
-function resetForm() {
-  document.getElementById('feedbackForm').reset();
-  document.getElementById('successScreen').style.display = 'none';
-  document.getElementById('feedbackForm').style.display = 'block';
-  CHALLENGE_IDS.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.checked = false; el.closest('.check-item').classList.remove('checked'); }
-  });
-  document.getElementById('ape_q2_detail_wrap').classList.remove('visible');
-  document.getElementById('department').disabled = true;
-  document.getElementById('department').innerHTML = '<option value="" disabled selected>First select your college</option>';
-  document.getElementById('facultySections').innerHTML = '';
-  document.getElementById('dynamicContent').style.display = 'none';
-  document.querySelectorAll('.scale-btns').forEach(sb => sb.classList.remove('has-selection'));
-  updateProgress();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// ─── SUBMIT — Supabase duplicate check + full save + Google Sheets backup ─────
-document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  if (!validateForm()) return;
-
-  const regNo = document.getElementById('regNumber').value.trim().toUpperCase();
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span>Checking…</span><span>⏳</span>';
-
-  const overlay = document.getElementById('loadingOverlay');
-  const loadingMsg = document.getElementById('loadingMsg');
-
-  // ── Step 1: Check for duplicate reg number ────────────────────────────────
-  loadingMsg.textContent = 'Checking if already submitted…';
-  overlay.classList.add('show');
-
-  try {
-    const alreadySubmitted = await checkRegNumber(regNo);
-    if (alreadySubmitted) {
-      overlay.classList.remove('show');
-      btn.disabled = false;
-      btn.innerHTML = '<span>Submit Feedback</span><span>→</span>';
-      document.getElementById('feedbackForm').style.display = 'none';
-      document.getElementById('alreadyRegNo').textContent = regNo;
-      document.getElementById('alreadyScreen').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    // ── Step 2: Reserve the slot in submissions table ─────────────────────
-    loadingMsg.textContent = 'Saving your submission…';
-    const saveResult = await saveRegNumber(regNo);
-    if (saveResult === 'duplicate') {
-      overlay.classList.remove('show');
-      btn.disabled = false;
-      btn.innerHTML = '<span>Submit Feedback</span><span>→</span>';
-      document.getElementById('feedbackForm').style.display = 'none';
-      document.getElementById('alreadyRegNo').textContent = regNo;
-      document.getElementById('alreadyScreen').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-
-    // ── Step 3: Build the full data object ────────────────────────────────
-    const fd = new FormData(this);
-    const college = fd.get('collegeName');
-    const dept    = fd.get('department');
-
-    const selectedChallenges = CHALLENGE_IDS
-      .filter(id => document.getElementById(id)?.checked)
-      .map(id => document.getElementById(id).value)
-      .join(', ');
-
-    const data = {
-      timestamp:                  new Date().toISOString(),
-      studentName:                fd.get('studentName')          || '',
-      registerNumber:             regNo,
-      studentEmail:               fd.get('studentEmail')         || '',
-      collegeName:                college                        || '',
-      department:                 dept                           || '',
-      ape_q1_assessments:         fd.get('ape_q1')               || '',
-      ape_q2_studyMaterials:      fd.get('ape_q2')               || '',
-      ape_q2_missingPapers:       fd.get('ape_q2_detail')        || '',
-      ape_q3_handsOnRating:       fd.get('ape_q3_rating')        || '',
-      ape_q4_confidenceRating:    fd.get('ape_q4_rating')        || '',
-      challenges_selected:        selectedChallenges,
-      challenges_detail:          fd.get('challengeDetail')      || '',
-      challenges_suggestions:     fd.get('challengeSuggestions') || '',
-      nps_score:                  fd.get('nps_score')            || '',
-      nps_fu1_campusSatisfied:    fd.get('nps_fu1')              || '',
-      nps_fu2_classroomSatisfied: fd.get('nps_fu2')              || '',
-      nps_fu3_skillDev:           fd.get('nps_fu3')              || '',
-      nps_fu4_placement:          fd.get('nps_fu4')              || '',
-      nps_likes:                  fd.get('npsLike')              || '',
-      nps_improve:                fd.get('npsImprove')           || '',
-    };
-
-    if (COLLEGE_DATA[college] && COLLEGE_DATA[college][dept]) {
-      COLLEGE_DATA[college][dept].forEach((sub, idx) => {
-        const n = idx + 1;
-        data[`subject${n}_Name`]   = fd.get(`subject${n}_Name`)   || sub.subject;
-        data[`subject${n}_Mentor`] = fd.get(`subject${n}_Mentor`) || (sub.mentor || '');
-        data[`subject${n}_Rating`] = fd.get(`s${n}_rating`)       || '';
-        QUESTIONS.forEach((_, qi) => {
-          data[`subject${n}_Q${qi+1}`] = fd.get(`s${n}_q${qi}`) || '';
-        });
-      });
-    }
-
-    // ── Step 4: Save full response to Supabase (PRIMARY store) ────────────
-    loadingMsg.textContent = 'Saving to database…';
-    await saveFullResponse(data);   // soft-fail: won't block success screen
-
-    // ── Step 5: Fire-and-forget to Google Sheets (BACKUP) ─────────────────
-    loadingMsg.textContent = 'Submitting your feedback…';
-    const formPayload = new URLSearchParams();
-    formPayload.append('payload', JSON.stringify(data));
-    fetch(SHEET_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: formPayload.toString()
-    }).catch(() => {}); // fire-and-forget
-
-    // ── Step 6: Show success ──────────────────────────────────────────────
-    overlay.classList.remove('show');
-    btn.disabled = false;
-    btn.innerHTML = '<span>Submit Feedback</span><span>→</span>';
-    document.getElementById('feedbackForm').style.display = 'none';
-    const studentName = (fd.get('studentName') || '').trim();
-    const title = studentName ? `Thank you, ${studentName}! 🎉` : 'Feedback Submitted! 🎉';
-    document.getElementById('successTitle').textContent = title;
-    document.getElementById('successScreen').style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  } catch (err) {
-    console.error('Submission error:', err);
-    overlay.classList.remove('show');
-    btn.disabled = false;
-    btn.innerHTML = '<span>Submit Feedback</span><span>→</span>';
-    showToast('Network error. Please check your connection and try again.', 'error');
+  if (filtered.length === 0) {
+    document.getElementById('detailedTable').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <p>No responses found for the selected filters</p>
+      </div>
+    `;
+    return;
   }
-});
+
+  let tableHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Student</th>
+          <th>Register #</th>
+          <th>College</th>
+          <th>Department</th>
+          <th>NPS</th>
+          <th>Challenges</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  filtered.forEach(r => {
+    const date = new Date(r.timestamp || r.created_at).toLocaleDateString();
+    tableHTML += `
+      <tr>
+        <td>${date}</td>
+        <td>${r.student_name}</td>
+        <td>${r.register_number}</td>
+        <td>${r.college_name}</td>
+        <td>${r.department}</td>
+        <td><span class="badge ${r.nps_score >= 9 ? 'success' : r.nps_score >= 7 ? 'warning' : 'error'}">${r.nps_score}</span></td>
+        <td>${r.challenges_selected || 'None'}</td>
+      </tr>
+    `;
+  });
+
+  tableHTML += '</tbody></table>';
+  document.getElementById('detailedTable').innerHTML = tableHTML;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FACULTY RATINGS TAB
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderFaculty() {
+  const colleges = [...new Set(allData.map(r => r.college_name))];
+  const collegeFilter = document.getElementById('facultyCollegeFilter');
+  collegeFilter.innerHTML = '<option value="">All Colleges</option>';
+  colleges.forEach(c => {
+    collegeFilter.innerHTML += `<option value="${c}">${c}</option>`;
+  });
+
+  filterFaculty();
+}
+
+function filterFaculty() {
+  const college = document.getElementById('facultyCollegeFilter').value;
+  const mentor = document.getElementById('facultyMentorFilter').value;
+
+  // Collect all faculty ratings
+  const facultyStats = {};
+  allData.forEach(r => {
+    if (college && r.college_name !== college) return;
+    
+    for (let i = 1; i <= 7; i++) {
+      const subjectName = r[`subject${i}_name`];
+      const mentorName = r[`subject${i}_mentor`];
+      const rating = r[`subject${i}_rating`];
+      
+      if (mentorName && rating) {
+        if (mentor && mentorName !== mentor) continue;
+        
+        const key = `${mentorName}|${subjectName}`;
+        if (!facultyStats[key]) {
+          facultyStats[key] = {
+            mentor: mentorName,
+            subject: subjectName,
+            ratings: [],
+            totalRatings: 0,
+            avgRating: 0
+          };
+        }
+        facultyStats[key].ratings.push(parseFloat(rating));
+      }
+    }
+  });
+
+  // Calculate averages
+  Object.values(facultyStats).forEach(f => {
+    f.totalRatings = f.ratings.length;
+    f.avgRating = (f.ratings.reduce((a, b) => a + b, 0) / f.totalRatings).toFixed(2);
+  });
+
+  // Update mentor filter
+  const mentors = [...new Set(Object.values(facultyStats).map(f => f.mentor))];
+  const mentorFilter = document.getElementById('facultyMentorFilter');
+  mentorFilter.innerHTML = '<option value="">All Mentors</option>';
+  mentors.forEach(m => {
+    mentorFilter.innerHTML += `<option value="${m}">${m}</option>`;
+  });
+
+  if (Object.keys(facultyStats).length === 0) {
+    document.getElementById('facultyTable').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">👨‍🏫</div>
+        <p>No faculty ratings found</p>
+      </div>
+    `;
+    return;
+  }
+
+  let tableHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Mentor</th>
+          <th>Subject</th>
+          <th>Total Ratings</th>
+          <th>Average Rating</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  Object.values(facultyStats)
+    .sort((a, b) => b.avgRating - a.avgRating)
+    .forEach(f => {
+      tableHTML += `
+        <tr>
+          <td><strong>${f.mentor}</strong></td>
+          <td>${f.subject}</td>
+          <td>${f.totalRatings}</td>
+          <td><span class="badge ${f.avgRating >= 4 ? 'success' : f.avgRating >= 3 ? 'warning' : 'error'}">${f.avgRating} / 5.0</span></td>
+        </tr>
+      `;
+    });
+
+  tableHTML += '</tbody></table>';
+  document.getElementById('facultyTable').innerHTML = tableHTML;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NPS ANALYSIS TAB
+// ═══════════════════════════════════════════════════════════════════════════
+
+function renderNPS() {
+  const colleges = [...new Set(allData.map(r => r.college_name))];
+  const filter = document.getElementById('npsCollegeFilter');
+  filter.innerHTML = '<option value="">All Colleges</option>';
+  colleges.forEach(c => {
+    filter.innerHTML += `<option value="${c}">${c}</option>`;
+  });
+
+  filterNPS();
+}
+
+function filterNPS() {
+  const college = document.getElementById('npsCollegeFilter').value;
+  const filtered = college 
+    ? allData.filter(r => r.college_name === college)
+    : allData;
+
+  const promoters = filtered.filter(r => r.nps_score >= 9).length;
+  const passives = filtered.filter(r => r.nps_score >= 7 && r.nps_score <= 8).length;
+  const detractors = filtered.filter(r => r.nps_score <= 6 && r.nps_score !== null).length;
+  const npsIndex = Math.round(((promoters - detractors) / filtered.length) * 100);
+
+  document.getElementById('npsStats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">NPS Index</div>
+      <div class="stat-value ${npsIndex >= 50 ? 'success' : npsIndex >= 0 ? 'warning' : 'error'}">${npsIndex}%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Promoters (9-10)</div>
+      <div class="stat-value success">${promoters}</div>
+      <div class="stat-label" style="margin-top:8px;">${((promoters/filtered.length)*100).toFixed(1)}% of total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Passives (7-8)</div>
+      <div class="stat-value warning">${passives}</div>
+      <div class="stat-label" style="margin-top:8px;">${((passives/filtered.length)*100).toFixed(1)}% of total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Detractors (0-6)</div>
+      <div class="stat-value error">${detractors}</div>
+      <div class="stat-label" style="margin-top:8px;">${((detractors/filtered.length)*100).toFixed(1)}% of total</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════════════════════════════════
+
+async function init() {
+  const success = await loadData();
+  
+  if (!success) {
+    document.getElementById('overviewStats').innerHTML = `
+      <div class="error-message">
+        ❌ Unable to load data from Supabase or Google Sheets. Please check your configuration.
+      </div>
+    `;
+    return;
+  }
+
+  if (allData.length === 0) {
+    document.getElementById('overviewStats').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <p>No feedback responses yet. Share the form to start collecting data!</p>
+      </div>
+    `;
+    return;
+  }
+
+  renderOverview();
+}
+
+init();
 </script>
+
 </body>
 </html>
